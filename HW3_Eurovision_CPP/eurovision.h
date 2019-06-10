@@ -6,25 +6,38 @@
 // it's allowed to define here any using statements, according to needs.
 // do NOT define here : using namespace std;
 
+using std::string;
 //---------------------------------------------------
 
 enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
 //---------------------------------------------------
-
-class Participant
+ class Participant
 {
 	// relevant private members can be defined here, if necessary.
 
+	 const string state;
+	 bool isRegistered;
+
 public:
+
+	string song;
+	int timeLength;
+	string singer;
+	
+	Participant(const string state,const string song,const int timeLength,const string singer);
+	~Participant() = default;
+	Participant(Participant& p) = delete;
+	
+	void updateRegistered(bool status);
+	void update(const string song,const int timeLength,const string singer);
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
 	// are mentioned and demonstrated in the test example that has been published.
 	// NO OTHER METHODS SHOULD APPEAR HERE.
 
 	// NO friend is allowed here.
-
 };
 
 //---------------------------------------------------
@@ -32,9 +45,18 @@ public:
 
 class Voter
 {
-	/ relevant private members can be defined here, if necessary.
+	// relevant private members can be defined here, if necessary.
+	string state;
+	VoterType VoterType;
 
 public:
+
+	Voter(string state);
+	~Voter() = default;
+	Voter(Voter& v) = delete;
+
+
+
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
 	// are mentioned and demonstrated in the test example that has been published.
@@ -61,7 +83,7 @@ struct Vote
 
 class MainControl
 {
-	/ relevant private members can be defined here, if necessary.
+	// relevant private members can be defined here, if necessary.
 
 public:
 

@@ -18,10 +18,18 @@
     <ClCompile Include="Voter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Participant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
