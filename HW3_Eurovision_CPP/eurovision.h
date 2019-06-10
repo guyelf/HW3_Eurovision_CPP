@@ -4,7 +4,7 @@
 #include <iostream>
 
 // it's allowed to define here any using statements, according to needs.
-// do NOT define here : using namespace std;
+// do NOT define here : using namespace std dsklvasldvlk dvl;
 
 //---------------------------------------------------
 
