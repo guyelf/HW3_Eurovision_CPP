@@ -115,6 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MainControl.cpp" />
     <ClCompile Include="Participant.cpp" />
     <ClCompile Include="Voter.cpp" />
   </ItemGroup>

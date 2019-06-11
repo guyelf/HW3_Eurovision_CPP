@@ -21,6 +21,9 @@
     <ClCompile Include="Participant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MainControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h">
