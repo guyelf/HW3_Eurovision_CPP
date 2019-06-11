@@ -79,21 +79,20 @@ public:
 struct Vote
 {
 	Voter vr;
-
-	//todo: how to save votes from voter. array? where?
+	string states [10];
 
 	Vote(Voter vr, string state);// remember to check for judge here too
 	Vote(Voter vr, string s1 = "", string s2 = "", string s3 = "", 
 		string s4 = "",string s5 = "", string s6 = "", string s7 = "", 
 		string s8 = "",string s9 = "", string s10 = ""); //overload for judge
+
 	~Vote() = default;
 	Vote(Vote& v) = delete;
-
+	Vote& operator=(const Vote&) = delete;
 	
 	// ALL is public here.
 	// need to define ONLY data members and c'tr and d'tr.
 	// NO NEED to define anything else.
-
 };
 
 // -----------------------------------------------------------
