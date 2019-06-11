@@ -35,10 +35,7 @@ public:
 	void updateRegistered(bool status);
 	void update(const string song,const int timeLength,const string singer);
 
-	 //todo: maybe needs to add the field ostream& os like in the presentation
-	ostream& operator<<(const Participant& p);
 
-	 //todo: overload << so you can print according to the format 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
 	// are mentioned and demonstrated in the test example that has been published.
 	// NO OTHER METHODS SHOULD APPEAR HERE.
@@ -52,18 +49,21 @@ public:
 class Voter
 {
 	// relevant private members can be defined here, if necessary.
-	string state;
-	VoterType voterType;
+	string state_name;
+	VoterType voter_type;
+	int times_of_votes;
 
 public:
 
 	Voter(string state, VoterType voterType = Regular);
 	~Voter() = default;
 	Voter(Voter& v) = delete;
-	//todo: provide getters for state & voterType	
-
-	int timesOfVotes;
-	//todo: overload ++ for timesOfVotes
+	
+	string state()const;
+	VoterType voterType() const;
+	int timesOfVotes() const;
+	
+	Voter& operator++();
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
 	// are mentioned and demonstrated in the test example that has been published.
@@ -86,10 +86,11 @@ struct Vote
 		string s4 = "",string s5 = "", string s6 = "", string s7 = "", 
 		string s8 = "",string s9 = "", string s10 = ""); //overload for judge
 
-	~Vote() = default;
 	Vote(Vote& v) = delete;
 	Vote& operator=(const Vote&) = delete;
-	
+
+	//todo: implement d'tor for arrays	
+
 	// ALL is public here.
 	// need to define ONLY data members and c'tr and d'tr.
 	// NO NEED to define anything else.
@@ -123,10 +124,10 @@ public:
 
 	//checks if the given state participates in the Eurovision or not
 	bool participate(string state_name);
-	//todo: operator oveloading: 1. += for adding participants - register them
-	//todo/////////////////////  2. += for voting in the system
-	//todo/////////////////////  3. -= for voting in the system
-	//todo/////////////////////  4. << for printing the info of eurovision according to the requirement in test1.cpp
+
+	MainControl& operator+=(const Participant& p);
+	MainControl& operator+=(const Vote& v);
+	MainControl& operator-=(const Vote& v);
 
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
@@ -137,6 +138,8 @@ public:
 
 };
 
+ostream& operator<<(ostream& os ,const Participant& p);
+ostream& operator<<(ostream& os, const MainControl& main_control);
 // -----------------------------------------------------------
 
 #endif
