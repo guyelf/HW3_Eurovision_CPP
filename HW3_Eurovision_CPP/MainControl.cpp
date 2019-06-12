@@ -24,4 +24,3 @@ bool MainControl::legalParticipant(Participant p)
 
 
 
-

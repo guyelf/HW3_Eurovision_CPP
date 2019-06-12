@@ -81,8 +81,20 @@ public:
 
 
 // -----------------------------------------------------------
+struct StateWithVote
+{
+	string state;
+	int reg_votes;
+	int judge_votes;
 
 
+	explicit StateWithVote(string state, int regular_votes = 0, int judge_votes = 0);
+	StateWithVote(StateWithVote& s) = delete;
+	~StateWithVote() = default;
+};
+
+
+// -----------------------------------------------------------
 struct Vote
 {
 	Voter vr;
