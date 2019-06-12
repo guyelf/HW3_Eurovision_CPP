@@ -22,10 +22,6 @@ bool MainControl::legalParticipant(Participant p)
 	return !illigal_result;
 }
 
-MainControl& MainControl::operator+=(const Participant& p) 
-{
-	
-}
 
 
 

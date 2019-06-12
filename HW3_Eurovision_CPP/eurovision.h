@@ -55,7 +55,7 @@ public:
 class Voter
 {
 	// relevant private members can be defined here, if necessary.
-	string state_name;
+	const string state_name;
 	VoterType voter_type;
 	int times_of_votes;
 
