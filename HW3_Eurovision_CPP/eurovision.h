@@ -81,16 +81,15 @@ public:
 
 
 // -----------------------------------------------------------
-struct StateWithVote
+struct ParticipantWVotes
 {
-	string state;
+	Participant* participant_ptr;
 	int reg_votes;
 	int judge_votes;
 
-
-	explicit StateWithVote(string state, int regular_votes = 0, int judge_votes = 0);
-	StateWithVote(StateWithVote& s) = delete;
-	~StateWithVote() = default;
+	explicit ParticipantWVotes(Participant* p= nullptr, int regular_votes = 0, int judge_votes = 0);
+	ParticipantWVotes(ParticipantWVotes& s) = delete;
+	~ParticipantWVotes() = default;
 };
 
 
@@ -123,12 +122,13 @@ class MainControl
 	const int maxSongLength;
 	const int maxParticipants;
 	const int maxRegularVotes;
+	ParticipantWVotes* contest_arr;
 
 public:
 
 	MainControl(int maxSongLength=180, int maxParticipants=26, int maxRegularVotes=5);
 	void setPhase(Phase phase);
-
+	~MainControl();
 
 	bool legalParticipant(Participant p);
 
@@ -137,6 +137,7 @@ public:
 
 	MainControl& operator+=(const Participant& p);
 	MainControl& operator+=(const Vote& v);
+
 
 	/*
   unregister p5 from the system.
@@ -197,6 +198,7 @@ UK : Regular(1) Judge(10)
 
 */
 ostream& operator<<(ostream& os, const MainControl& main_control);
+ostream& operator<<(ostream& os, const Voter& v);
 
 
 // -----------------------------------------------------------

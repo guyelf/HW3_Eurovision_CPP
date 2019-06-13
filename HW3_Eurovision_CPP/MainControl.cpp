@@ -5,6 +5,7 @@ MainControl::MainControl(int maxSongLength, int maxParticipants,
 						  maxParticipants(maxParticipants),
 						  maxRegularVotes(maxRegularVotes)
 {
+	this->contest_arr = new ParticipantWVotes[maxParticipants];
 	this->phase = Registration;
 }
 
@@ -21,6 +22,12 @@ bool MainControl::legalParticipant(Participant p)
 
 	return !illigal_result;
 }
+
+MainControl::~MainControl()
+{
+	delete[] this->contest_arr;
+}
+
 
 
 
