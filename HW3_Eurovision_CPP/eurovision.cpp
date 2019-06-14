@@ -138,3 +138,9 @@ ostream& operator<<(ostream& os, const Voter& v) {
 	return os << '<' << v.state() << '/' << v.voterType() << '>';
 }
 
+int main(int argc, char* argv[])
+{
+	
+}
+
+
