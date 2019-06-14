@@ -116,9 +116,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="eurovision.cpp" />
-    <ClCompile Include="MainControl.cpp" />
-    <ClCompile Include="Participant.cpp" />
-    <ClCompile Include="Voter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h" />

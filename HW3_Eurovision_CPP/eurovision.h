@@ -96,16 +96,16 @@ struct ParticipantWVotes
 // -----------------------------------------------------------
 struct Vote
 {
-	Voter vr;
+	Voter& vr;
 	string states [10];
 
-	Vote(Voter vr, string s1 = "", string s2 = "", string s3 = "", 
+	Vote(Voter& vr, string s1 = "", string s2 = "", string s3 = "", 
 		string s4 = "",string s5 = "", string s6 = "", string s7 = "", 
-		string s8 = "",string s9 = "", string s10 = ""); //overload for judge
+		string s8 = "",string s9 = "", string s10 = ""); 
 
 	Vote(Vote& v) = delete;
 	Vote& operator=(const Vote&) = delete;
-
+	~Vote();
 	// ALL is public here.
 	// need to define ONLY data members and c'tr and d'tr.
 	// NO NEED to define anything else.
