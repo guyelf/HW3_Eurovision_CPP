@@ -117,37 +117,35 @@ MainControl::~MainControl()
 
 MainControl& MainControl::operator+=(const Vote &v)
 {
-    Voter* voter_p = &(v.vr);
-
     //Regular:
-    if (voter_p->voterType() == Regular){
+    if (v.vr.voterType() == Regular){
 
-        if(voter_p->timesOfVotes() == maxRegularVotes)
+        if(v.vr.timesOfVotes() == maxRegularVotes)
             return *this;
-        if(!participate(voter_p->state()) || !participate(v.states[0]))
+        if(!participate(v.vr.state()) || !participate(v.states[0]))
             return *this;
-        if (voter_p->state() == v.states[0]) //todo: not sure if it's enough
+        if (v.vr.state() == v.states[0]) //todo: not sure if it's enough
             return *this;
 
         for (int i=0; i<(this->maxParticipants); ++i)
         {
             if (contest_arr[i].participant_ptr->state() == v.states[0]){ //todo: not sure if it's enough
                 contest_arr[i].reg_votes += 1;
-                voter_p->operator++(); //todo: not sure if it's enough
+                ++(v.vr);
                 return *this;
             }
         }
     }
 
     //Judges:
-    if(voter_p->timesOfVotes() == 1)
+    if(v.vr.timesOfVotes() == 1)
         return *this;
-    if(!participate(voter_p->state()))
+    if(!participate(v.vr.state()))
         return *this;
 
     for (int i=0; i<10; ++i)
     {
-        if(v.states[i] == voter_p->state())
+        if(v.states[i] == v.vr.state())
             continue;
         if(!participate(v.states[i]))
             continue;
@@ -167,7 +165,7 @@ MainControl& MainControl::operator+=(const Vote &v)
         }
 
         if (judge_did_vote)
-            voter_p->operator++(); //todo: not sure if it's enough
+            ++(v.vr);
     }
     return *this;
 }
