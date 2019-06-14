@@ -102,7 +102,7 @@ void MainControl::setPhase(Phase phase)
 	this->phase = phase;
 }
 
-bool MainControl::legalParticipant(Participant p)
+bool MainControl::legalParticipant(const Participant& p)
 {
 	bool illigal_result = p.timeLength() > this->maxSongLength || 
 			p.state() == "" || p.song() == "" || p.singer() == "";
@@ -110,11 +110,78 @@ bool MainControl::legalParticipant(Participant p)
 	return !illigal_result;
 }
 
+bool MainControl::isContestFull()
+{
+	for (int i = 0; i < this->maxParticipants; i++)
+	{
+		if (contest_arr[i].participant_ptr == nullptr)
+			return false;
+	}
+	return true;
+}
+
+bool MainControl::isParticipantRegistered(const Participant& participant)
+{
+	for (int i = 0; i <this->maxParticipants; ++i)
+	{
+		if (contest_arr[i].participant_ptr->state() == participant.state() &&
+			contest_arr[i].participant_ptr->singer() == participant.singer() &&
+			contest_arr[i].participant_ptr->song() == participant.song() &&
+			contest_arr[i].participant_ptr->timeLength() == participant.timeLength())
+			return true;		
+	}
+	return false;
+}
+
+
+
+MainControl& MainControl::operator+=(Participant& participant)
+{
+//checks that all the prerequisites for the participant and eurovision are valid
+	const bool is_valid = this->legalParticipant(participant) && 
+		this->phase == Registration && !isContestFull() && 
+		!isParticipantRegistered(participant);
+
+	if (!is_valid) return *this;
+
+//adding the participantWVotes member to the contest_array
+for (int i = 0; i < this->maxParticipants; ++i)
+{
+	if(this->contest_arr[i].participant_ptr==nullptr)
+	{
+		participant.updateRegistered(true);
+		this->contest_arr[i].participant_ptr = &participant;
+		break;
+	}
+}
+return *this;
+}
+
+MainControl& MainControl::operator-=(Participant& participant)
+{
+	const bool is_valid_state = this->phase == Registration &&
+		this->isParticipantRegistered(participant);
+	if (!is_valid_state) return *this;
+
+	for (int i = 0; i < maxParticipants; i++)
+	{
+		if(this->contest_arr[i].participant_ptr->state() == participant.state())
+		{
+			participant.updateRegistered(false);
+			this->contest_arr[i].participant_ptr = nullptr;
+			break;
+		}
+	}
+	return *this;
+}
+
+
 MainControl::~MainControl()
 {
 	delete[] this->contest_arr;
 }
-//eurovision--------------------------------------------------------------------
+
+//ParticipantWVotes -----------------------------------------------------------
 
 ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
 													 int judge_votes) :
@@ -122,7 +189,7 @@ ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
 
 
 
-// overload of the << operator--------------------------------------------------
+// overloading of the << operator-----------------------------------------------
 
 //prints the data of a participant:
 ostream& operator<<(ostream& os, const Participant& p)
@@ -138,6 +205,8 @@ ostream& operator<<(ostream& os, const Voter& v) {
 	return os << '<' << v.state() << '/' << v.voterType() << '>';
 }
 
+
+//Main ------------------------------------------------------------------------
 int main(int argc, char* argv[])
 {
 	

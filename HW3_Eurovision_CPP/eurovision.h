@@ -124,33 +124,26 @@ class MainControl
 	const int maxRegularVotes;
 	ParticipantWVotes* contest_arr;
 
+	//checks if the contest array is full
+	bool isContestFull();
+	//checks if the given participant is already registered in the system
+	bool isParticipantRegistered(const Participant& participant);
 public:
 
 	MainControl(int maxSongLength=180, int maxParticipants=26, int maxRegularVotes=5);
 	void setPhase(Phase phase);
 	~MainControl();
 
-	bool legalParticipant(Participant p);
+	bool legalParticipant(const Participant& p);
 
 	//checks if the given state participates in the Eurovision or not
 	bool participate(string state_name);
 
-	MainControl& operator+=(const Participant& p);
-	MainControl& operator+=(const Vote& v);
+	MainControl& operator+=(Participant& participant);
+	MainControl& operator-=(Participant &participant);
 
+	MainControl& operator+=(const Vote& vote);
 
-	/*
-  unregister p5 from the system.
-  it is allowed to do this only in the Registration phase.
-  Moreover, if p5 is not registered, then just ignore the operation without
-  further notice.
-
-  can also do operations like
-
-  (((eurovision -= p5) -= p3) += p4) -= p4;
-
-*/
-	MainControl& operator-=(const Vote& v);
 
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
