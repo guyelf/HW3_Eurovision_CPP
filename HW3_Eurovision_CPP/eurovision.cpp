@@ -126,7 +126,7 @@ MainControl& MainControl::operator+=(const Vote &v)
             return *this;
         if(!participate(voter_p->state()) || !participate(v.states[0]))
             return *this;
-        if (voter_p->state() != v.states[0]) //todo: not sure if it's enough
+        if (voter_p->state() == v.states[0]) //todo: not sure if it's enough
             return *this;
 
         for (int i=0; i<(this->maxParticipants); ++i)
