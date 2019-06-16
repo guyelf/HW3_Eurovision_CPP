@@ -10,6 +10,7 @@
 using std::string;
 using std::ostream;
 using std::istream;
+using std::swap;
 //---------------------------------------------------
 enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
@@ -88,7 +89,7 @@ struct ParticipantWVotes
 	int judge_votes;
 
 	explicit ParticipantWVotes(Participant* p= nullptr, int regular_votes = 0, int judge_votes = 0);
-	ParticipantWVotes(ParticipantWVotes& s) = delete;
+	//ParticipantWVotes(ParticipantWVotes& s) = delete;
 	~ParticipantWVotes() = default;
 };
 
@@ -128,16 +129,17 @@ class MainControl
 	bool isContestFull();
 	//checks if the given participant is already registered in the system
 	bool isParticipantRegistered(const Participant& participant);
+	int getParticipatingNum() const;
 public:
 
 	MainControl(int maxSongLength=180, int maxParticipants=26, int maxRegularVotes=5);
 	void setPhase(Phase phase);
-	~MainControl();
+	~MainControl() ;
 
-	bool legalParticipant(const Participant& p);
+	bool legalParticipant(const Participant& p) const;
 
 	//checks if the given state participates in the Eurovision or not
-	bool participate(string state_name);
+	bool participate(string state_name) const;
 
 	MainControl& operator+=(Participant& participant);
 	MainControl& operator-=(Participant &participant);
@@ -145,54 +147,18 @@ public:
 	MainControl& operator+=(const Vote& vote);
 
 
-
+	friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 	// need to define here possibly c'tr and d'tr and ONLY methods that
 	// are mentioned and demonstrated in the test example that has been published.
 	// NO OTHER METHODS SHOULD APPEAR HERE.
 
 	// Also it's allowed here to define friend.
-
+	//friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 };
 
 ostream& operator<<(ostream& os ,const Participant& p);
-
-
-//todo: remove all the comments below after done implementing the overload
-/*
-  displays the main features of the system.
-  All the display is between curly brackets ({ in the first line, then continue
-  to next line, then all the relevant data, then } in the last line.
-  first line after { displays the phase - can be one of Registration or Contest or Voting.
-  if phase is Registration, then all Registered participant are displayed
-  sorted regarding state name. each state in a different line, in the same format
-  as operator<< to a participant.
-  if phase is Contest, nothing more is displayed.
-  if phase is Voting, then all votes (both Regular and Judge) are displayed,
-  in respect to all states of registered participants.
-  each state in a different line. the states are sorted in respect to state name.
-
-  example :
-{
-Registration
-[Australia/Song_Australia/180/Singer_Australia]
-[Cyprus/Song_Cyprus/172/Singer_Cyprus]
-[Israel/Song_Israel/175/Singer_Israel]
-[UK/Song_UK/170/Singer_UK]
-}
-
-  another example relevant to Voting phase - explanation will follow later :
-{
-Voting
-Australia : Regular(0) Judge(8)
-Cyprus : Regular(6) Judge(12)
-Israel : Regular(1) Judge(0)
-UK : Regular(1) Judge(10)
-}
-
-*/
-ostream& operator<<(ostream& os, const MainControl& main_control);
 ostream& operator<<(ostream& os, const Voter& v);
-
+ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 // -----------------------------------------------------------
 

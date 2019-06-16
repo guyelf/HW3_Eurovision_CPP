@@ -1,4 +1,5 @@
 #include "eurovision.h"
+#include <functional>
 
 //Participant-------------------------------------------------------------------
 
@@ -84,6 +85,66 @@ Vote::~Vote()
 	delete[] states;
 }
 
+MainControl& MainControl::operator+=(const Vote &v)
+{
+	if (this->phase != Voting) 
+		return *this;
+
+	//Regular:
+	if (v.vr.voterType() == Regular) {
+
+		if (v.vr.timesOfVotes() == maxRegularVotes)
+			return *this;
+		if (!participate(v.vr.state()) || !participate(v.states[0]))
+			return *this;
+		if (v.vr.state() == v.states[0]) //todo: not sure if it's enough
+			return *this;
+
+		for (int i = 0; i < this->maxParticipants; ++i)
+		{
+			if (contest_arr[i].participant_ptr->state() == v.states[0])
+			{ //todo: not sure if it's enough
+				contest_arr[i].reg_votes += 1;
+				++v.vr;
+				return *this;
+			}
+		}
+	}
+
+	//Judges:
+	if (v.vr.timesOfVotes() > 0) //safer this way
+		return *this;
+	if (!participate(v.vr.state()))
+		return *this;
+
+	for (int i = 0; i < 10; ++i)
+	{
+		if (v.states[i] == v.vr.state())
+			continue;
+		if (!participate(v.states[i]))
+			continue;
+
+		bool judge_did_vote = false;
+		for (int j = 0; j < (this->maxParticipants); ++j)
+		{
+			if (contest_arr[j].participant_ptr->state() == v.states[i])
+			{ //todo: not sure if it's enough
+				if (i == 0)
+					contest_arr[j].judge_votes += 12;
+				if (i == 1)
+					contest_arr[j].judge_votes += 10;
+				else
+					contest_arr[j].judge_votes += (10 - i);
+
+				judge_did_vote = true;
+			}
+		}
+
+		if (judge_did_vote)
+			++(v.vr);
+	}
+	return *this;
+}
 
 
 //MainControl-------------------------------------------------------------------
@@ -102,13 +163,14 @@ void MainControl::setPhase(Phase phase)
 	this->phase = phase;
 }
 
-bool MainControl::legalParticipant(const Participant& p)
+bool MainControl::legalParticipant(const Participant& p) const
 {
-	bool illigal_result = p.timeLength() > this->maxSongLength || 
-			p.state() == "" || p.song() == "" || p.singer() == "";
+	bool illigal_result = p.timeLength() > this->maxSongLength ||
+		p.state() == "" || p.song() == "" || p.singer() == "";
 
 	return !illigal_result;
 }
+
 
 bool MainControl::isContestFull()
 {
@@ -118,6 +180,16 @@ bool MainControl::isContestFull()
 			return false;
 	}
 	return true;
+}
+
+int MainControl::getParticipatingNum() const
+{
+	int i = 0;
+	while(this->contest_arr[i].participant_ptr)
+	{
+		i++;
+	}
+	return i;
 }
 
 bool MainControl::isParticipantRegistered(const Participant& participant)
@@ -134,28 +206,79 @@ bool MainControl::isParticipantRegistered(const Participant& participant)
 }
 
 
+// not ordered insertion
+//MainControl& MainControl::operator+=(Participant& participant)
+//{
+////checks that all the prerequisites for the participant and eurovision are valid
+//	const bool is_valid = this->legalParticipant(participant) && 
+//		this->phase == Registration && !isContestFull() && 
+//		!isParticipantRegistered(participant);
+//
+//	if (!is_valid) return *this;
+//
+////adding the participantWVotes member to the contest_array
+//for (int i = 0; i < this->maxParticipants; ++i)
+//{
+//	if(this->contest_arr[i].participant_ptr==nullptr)
+//	{
+//		participant.updateRegistered(true);
+//		this->contest_arr[i].participant_ptr = &participant;
+//		break;
+//	}
+//}
+//return *this;
+//}
 
+//ordered insertion:
 MainControl& MainControl::operator+=(Participant& participant)
 {
-//checks that all the prerequisites for the participant and eurovision are valid
-	const bool is_valid = this->legalParticipant(participant) && 
-		this->phase == Registration && !isContestFull() && 
+	//checks that all the prerequisites for the participant and eurovision are valid
+	const bool is_valid = this->legalParticipant(participant) &&
+		this->phase == Registration && !isContestFull() &&
 		!isParticipantRegistered(participant);
 
 	if (!is_valid) return *this;
 
-//adding the participantWVotes member to the contest_array
-for (int i = 0; i < this->maxParticipants; ++i)
-{
-	if(this->contest_arr[i].participant_ptr==nullptr)
+
+
+	
+	//adding the participantWVotes member to the contest_array
+	int i = 0;
+	/*string st1 = this->contest_arr[i].participant_ptr->state();
+	string st2 = participant.state();*/
+	while (this->contest_arr[i].participant_ptr != nullptr &&
+			this->contest_arr[i].participant_ptr->state()
+			.compare(participant.state()) < 0)
+		i++;
+
+	//separate into 2 cases:
+	int j = i;
+	if (this->contest_arr[j].participant_ptr == nullptr)
 	{
 		participant.updateRegistered(true);
-		this->contest_arr[i].participant_ptr = &participant;
-		break;
+		this->contest_arr[j].participant_ptr = &participant;
+		return *this;
 	}
+	else
+	{
+		//advancing the i towards the end
+		while (this->contest_arr[i].participant_ptr != nullptr)
+			i++;
+		//running from the end backwards and swapping with nullptr(thus making 1 free slot to enter the new state)
+		while(i>j)
+		{
+			swap(contest_arr[i], contest_arr[i - 1]);
+			i--;
+		}
+		// reached to the place where needs to add the participant
+		//and adding it
+		//todo: check if i didn't miss by +1 / -1 the correct index
+		contest_arr[i].participant_ptr = &participant;
+		return *this;
+	}
+
 }
-return *this;
-}
+
 
 MainControl& MainControl::operator-=(Participant& participant)
 {
@@ -181,6 +304,7 @@ MainControl::~MainControl()
 	delete[] this->contest_arr;
 }
 
+
 //ParticipantWVotes -----------------------------------------------------------
 
 ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
@@ -192,6 +316,7 @@ ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
 // overloading of the << operator-----------------------------------------------
 
 //prints the data of a participant:
+using std::endl;
 ostream& operator<<(ostream& os, const Participant& p)
 {
 	string const part1 = "[" + p.state() + "/" + p.song() + "/";
@@ -204,6 +329,44 @@ ostream& operator<<(ostream& os, const Participant& p)
 ostream& operator<<(ostream& os, const Voter& v) {
 	return os << '<' << v.state() << '/' << v.voterType() << '>';
 }
+
+
+
+//prints a Eurovision data
+ostream& operator<<(ostream& os, const MainControl& eurovision)
+{
+	//prints the common begging
+	os << "{" << endl;
+	os << eurovision.phase;
+
+	int size = eurovision.getParticipatingNum();//doesn't necessarily has to be the maxParticipant size
+	string* sorted_states = new string[size];
+
+	for (int i = 0; i < size; ++i)
+	{
+		sorted_states[i] = eurovision.contest_arr[i].participant_ptr->state();
+	}
+
+
+	//sorted_states
+	//for (int i = 0; i < size; ++i)
+	//{
+	//	for (int j = 0; j < size; ++j)
+	//	{
+	//		if(sorted_states[i].compare(sorted_states[j]) > 0)
+	//		{
+	//			string temp = sorted_states[j];
+	//			sorted_states[j] = sorted_states[i];
+	//			sorted_states[i] = temp;
+	//		}
+	//			
+	//	}
+	//}
+
+
+}
+
+//todo: change all the == between strings to use strcmp
 
 
 //Main ------------------------------------------------------------------------
