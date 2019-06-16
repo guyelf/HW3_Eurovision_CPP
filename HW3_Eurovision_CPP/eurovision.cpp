@@ -117,59 +117,56 @@ MainControl::~MainControl()
 
 MainControl& MainControl::operator+=(const Vote &v)
 {
+    if (this->phase != Voting) return *this;
+
     //Regular:
     if (v.vr.voterType() == Regular){
+        if(v.vr.timesOfVotes() == maxRegularVotes) return *this;
+        if(v.states[0] == "") return *this;
+        if(!participate(v.vr.state()) || !participate(v.states[0])) return *this;
+        if(v.vr.state() == v.states[0]) return *this;
 
-        if(v.vr.timesOfVotes() == maxRegularVotes)
-            return *this;
-        if(!participate(v.vr.state()) || !participate(v.states[0]))
-            return *this;
-        if (v.vr.state() == v.states[0]) //todo: not sure if it's enough
-            return *this;
-
-        for (int i=0; i<(this->maxParticipants); ++i)
+        int i=0;
+        while ((i < this->maxParticipants) && (contest_arr[i].participant_ptr != nullptr))
         {
-            if (contest_arr[i].participant_ptr->state() == v.states[0]){ //todo: not sure if it's enough
+            if (contest_arr[i].participant_ptr->state() == v.states[0])
+            {
                 contest_arr[i].reg_votes += 1;
                 ++(v.vr);
                 return *this;
             }
+            i++;
         }
     }
 
     //Judges:
-    if(v.vr.timesOfVotes() == 1)
-        return *this;
-    if(!participate(v.vr.state()))
-        return *this;
+    if(v.vr.timesOfVotes() > 0) return *this;
+    if(!participate(v.vr.state())) return *this;
 
+    bool judge_did_vote = false;
     for (int i=0; i<10; ++i)
     {
-        if(v.states[i] == v.vr.state())
-            continue;
-        if(!participate(v.states[i]))
-            continue;
+        if(v.states[i] == "") break;
+        if(v.states[i] == v.vr.state()) continue;
+        if(!participate(v.states[i])) continue;
 
-        bool judge_did_vote = false;
-        for (int j=0; j<(this->maxParticipants); ++j)
+        int j=0;
+        while ((j < this->maxParticipants) && (contest_arr[j].participant_ptr != nullptr))
         {
-            if (contest_arr[j].participant_ptr->state() == v.states[i]) { //todo: not sure if it's enough
-                if (i==0)
-                    contest_arr[j].judge_votes += 12; // todo: define?
-                if (i==1)
-                    contest_arr[j].judge_votes += 10;
-                else
-                    contest_arr[j].judge_votes += (10-i);
+            if (contest_arr[j].participant_ptr->state() == v.states[i])
+            {
+                if (i==0) contest_arr[j].judge_votes += 12;
+                if (i==1) contest_arr[j].judge_votes += 10;
+                else contest_arr[j].judge_votes += (10-i);
                 judge_did_vote = true;
             }
+            j++;
         }
 
-        if (judge_did_vote)
-            ++(v.vr);
+        if (judge_did_vote) ++(v.vr);
     }
     return *this;
 }
-
 
 
 //eurovision--------------------------------------------------------------------
