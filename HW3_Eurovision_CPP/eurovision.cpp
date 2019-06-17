@@ -128,7 +128,7 @@ MainControl& MainControl::operator+=(const Vote &v)
 			if (contest_arr[j].participant_ptr->state() == v.states[i])
 			{
 				if (i == 0) contest_arr[j].judge_votes += 12;
-				if (i == 1) contest_arr[j].judge_votes += 10;
+				else if (i == 1) contest_arr[j].judge_votes += 10;
 				else contest_arr[j].judge_votes += (10 - i);
 				judge_did_vote = true;
 			}
