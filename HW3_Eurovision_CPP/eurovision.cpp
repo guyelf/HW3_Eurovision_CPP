@@ -193,6 +193,33 @@ ostream& operator<<(ostream& os, const Voter& v) {
     return os << '<' << v.state() << '/' << v.voterType() << '>';
 }
 
+//prints the data of eurovision:
+ostream& operator<<(ostream& os, const MainControl& main_control){
+    if (main_control.phase == Registration)
+    {
+        os << main_control.phase << std::endl;
+        for (int i=0; i<main_control.maxParticipants; i++)
+        {
+            if (main_control.contest_arr[i].participant_ptr == nullptr) break;
+            os << "[" << main_control.contest_arr[i].participant_ptr->state() << "/";
+            os << main_control.contest_arr[i].participant_ptr->song() << "/";
+            os << main_control.contest_arr[i].participant_ptr->timeLength() << "/";
+            os << main_control.contest_arr[i].participant_ptr->singer() << "]";
+        }
+        return os;
+    }
+
+    os << main_control.phase << std::endl;
+    for (int i=0; i<main_control.maxParticipants; i++)
+    {
+        if (main_control.contest_arr[i].participant_ptr == nullptr) break;
+        os << main_control.contest_arr[i].participant_ptr->state() << " : ";
+        os << "Regular(" << main_control.contest_arr[i].reg_votes << ") ";
+        os << "Judge(" << main_control.contest_arr[i].judge_votes << ")" << std::endl;
+    }
+    return os;
+}
+
 int main(int argc, char* argv[])
 {
 
