@@ -129,6 +129,7 @@ public:
     MainControl& operator+=(const Participant& p);
     MainControl& operator+=(const Vote& v);
     MainControl& operator-=(const Vote& v);
+    friend ostream& operator<<(ostream& os, const MainControl& main_control);
 
 
     // need to define here possibly c'tr and d'tr and ONLY methods that
