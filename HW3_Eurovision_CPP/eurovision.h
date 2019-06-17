@@ -1,7 +1,6 @@
 #ifndef EUROVISION_H_
 #define EUROVISION_H_
 
-#include <iostream>
 #include <string>
 
 // it's allowed to define here any using statements, according to needs.

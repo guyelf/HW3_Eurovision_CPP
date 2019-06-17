@@ -116,6 +116,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="eurovision.cpp" />
+    <ClCompile Include="test1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h" />

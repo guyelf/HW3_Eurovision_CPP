@@ -1,5 +1,4 @@
 #include "eurovision.h"
-#include <functional>
 
 //Participant-------------------------------------------------------------------
 
@@ -196,6 +195,18 @@ bool MainControl::isParticipantRegistered(const Participant& participant)
 	return false;
 }
 
+bool MainControl::participate(string state_name) const
+{
+	int i = 0;
+	while(this->contest_arr[i].participant_ptr != nullptr)
+	{
+		if(this->contest_arr[i].participant_ptr->state() == state_name)
+			return true;
+
+		i++;
+	}
+	return false;
+}
 
 // not ordered insertion
 //MainControl& MainControl::operator+=(Participant& participant)
@@ -286,7 +297,7 @@ MainControl& MainControl::operator-=(Participant& participant)
 	participant.updateRegistered(false);
 	this->contest_arr[i].participant_ptr = nullptr;
 
-	//update the order in the array accordingaly
+	//update the order in the array accordingly
 	while(this->contest_arr[i+1].participant_ptr != nullptr)
 	{
 		swap(this->contest_arr[i], this->contest_arr[i + 1]);
@@ -364,11 +375,4 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 		return os;
 	}
 }
-
-//Main ------------------------------------------------------------------------
-int main(int argc, char* argv[])
-{
-	
-}
-
 
