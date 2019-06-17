@@ -42,11 +42,12 @@ void Participant::updateRegistered(bool status)
 void Participant::update(const string song, const int timeLength, const string singer)
 {
 	if (isRegistered()) return;
+	
 	if (song != "")
 		this->song_name = song;
-	if (singer != "")
-		this->song_duration = timeLength;
 	if (timeLength != 0)
+		this->song_duration = timeLength;
+	if (singer != "")
 		this->singer_name = singer;
 }
 //Voter-------------------------------------------------------------------------
@@ -340,12 +341,13 @@ ostream& operator<<(ostream& os, const Participant& p)
 ostream& operator<<(ostream& os, const Voter& v) {
 	switch (v.voterType())
 	{
-		case 0: break;//todo: add ALL here when ready
+	//	case 0: break;//todo: add ALL here when ready
 		case 1:
 			return os << '<' << "Regular" << '/' << v.voterType() << '>';
 		case 2:
 			return  os << '<' << "Judge" << '/' << v.voterType() << '>';
 	}
+	return os;
 }
 
 
