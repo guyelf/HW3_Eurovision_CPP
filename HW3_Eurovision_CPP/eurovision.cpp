@@ -314,7 +314,6 @@ ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
 // overloading of the << operator-----------------------------------------------
 
 //prints the data of a participant:
-using std::endl;
 ostream& operator<<(ostream& os, const Participant& p)
 {
 	string const part1 = "[" + p.state() + "/" + p.song() + "/";
@@ -330,42 +329,41 @@ ostream& operator<<(ostream& os, const Voter& v) {
 
 
 
-//prints a Eurovision data
-ostream& operator<<(ostream& os, const MainControl& eurovision)
-{
-	//prints the common begging
+
+//prints the data of eurovision:
+ostream& operator<<(ostream& os, const MainControl& eurovision) {
+
 	os << "{" << endl;
-	os << eurovision.phase;
+	os << eurovision.phase << endl;
+	
+	if (eurovision.phase == Registration)
+		{
+			for (int i = 0; i < eurovision.maxParticipants; i++)
+			{
+				if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
+				os << "[" << eurovision.contest_arr[i].participant_ptr->state() << "/";
+				os << eurovision.contest_arr[i].participant_ptr->song() << "/";
+				os << eurovision.contest_arr[i].participant_ptr->timeLength() << "/";
+				os << eurovision.contest_arr[i].participant_ptr->singer() << "]" << endl;
+			}
 
-	int size = eurovision.getParticipatingNum();//doesn't necessarily has to be the maxParticipant size
-	string* sorted_states = new string[size];
-
-	for (int i = 0; i < size; ++i)
+			os << "}" << endl;
+			return os;
+		}
+	else
 	{
-		sorted_states[i] = eurovision.contest_arr[i].participant_ptr->state();
+		for (int i = 0; i < eurovision.maxParticipants; i++)
+		{
+			if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
+			os << eurovision.contest_arr[i].participant_ptr->state() << " : ";
+			os << "Regular(" << eurovision.contest_arr[i].reg_votes << ") ";
+			os << "Judge(" << eurovision.contest_arr[i].judge_votes << ")" <<endl;
+		}
+
+		os << "}" << endl;
+		return os;
 	}
-
-
-	//sorted_states
-	//for (int i = 0; i < size; ++i)
-	//{
-	//	for (int j = 0; j < size; ++j)
-	//	{
-	//		if(sorted_states[i].compare(sorted_states[j]) > 0)
-	//		{
-	//			string temp = sorted_states[j];
-	//			sorted_states[j] = sorted_states[i];
-	//			sorted_states[i] = temp;
-	//		}
-	//			
-	//	}
-	//}
-
-
 }
-
-//todo: change all the == between strings to use strcmp
-
 
 //Main ------------------------------------------------------------------------
 int main(int argc, char* argv[])
