@@ -184,13 +184,16 @@ int MainControl::getParticipatingNum() const
 
 bool MainControl::isParticipantRegistered(const Participant& participant)
 {
-	for (int i = 0; i <this->maxParticipants; ++i)
+	int i = 0;
+	while(contest_arr[i].participant_ptr != nullptr)
 	{
 		if (contest_arr[i].participant_ptr->state() == participant.state() &&
 			contest_arr[i].participant_ptr->singer() == participant.singer() &&
 			contest_arr[i].participant_ptr->song() == participant.song() &&
 			contest_arr[i].participant_ptr->timeLength() == participant.timeLength())
-			return true;		
+			return true;
+
+		i++;
 	}
 	return false;
 }

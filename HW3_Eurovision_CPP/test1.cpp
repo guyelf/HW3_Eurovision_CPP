@@ -114,7 +114,8 @@ int main()
   //------------------------------------------------
 
 	TEST("1.6")
-		((((eurovision += p1) += p2) += p3) += p4) += p5;
+		((((eurovision += p1)
+			+= p2) += p3) += p4) += p5;
 	/*
 	   try to register p1 and then p2 and the p3 and then p4 and then p5
 	   to the system;
