@@ -343,9 +343,9 @@ ostream& operator<<(ostream& os, const Voter& v) {
 	{
 	//	case 0: break;//todo: add ALL here when ready
 		case 1:
-			return os << '<' << "Regular" << '/' << v.voterType() << '>';
+			return os << '<' << v.state() << '/' << "Regular" << '>';
 		case 2:
-			return  os << '<' << "Judge" << '/' << v.voterType() << '>';
+			return  os << '<' << v.state() << '/' << "Judge" << '>';
 	}
 	return os;
 }
