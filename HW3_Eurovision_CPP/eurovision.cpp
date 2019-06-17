@@ -87,65 +87,56 @@ Vote::~Vote()
 
 MainControl& MainControl::operator+=(const Vote &v)
 {
-	if (this->phase != Voting) 
-		return *this;
+	if (this->phase != Voting) return *this;
 
 	//Regular:
 	if (v.vr.voterType() == Regular) {
+		if (v.vr.timesOfVotes() == maxRegularVotes) return *this;
+		if (v.states[0] == "") return *this;
+		if (!participate(v.vr.state()) || !participate(v.states[0])) return *this;
+		if (v.vr.state() == v.states[0]) return *this;
 
-		if (v.vr.timesOfVotes() == maxRegularVotes)
-			return *this;
-		if (!participate(v.vr.state()) || !participate(v.states[0]))
-			return *this;
-		if (v.vr.state() == v.states[0]) //todo: not sure if it's enough
-			return *this;
-
-		for (int i = 0; i < this->maxParticipants; ++i)
+		int i = 0;
+		while ((i < this->maxParticipants) && (contest_arr[i].participant_ptr != nullptr))
 		{
 			if (contest_arr[i].participant_ptr->state() == v.states[0])
-			{ //todo: not sure if it's enough
+			{
 				contest_arr[i].reg_votes += 1;
-				++v.vr;
+				++(v.vr);
 				return *this;
 			}
+			i++;
 		}
 	}
 
 	//Judges:
-	if (v.vr.timesOfVotes() > 0) //safer this way
-		return *this;
-	if (!participate(v.vr.state()))
-		return *this;
+	if (v.vr.timesOfVotes() > 0) return *this;
+	if (!participate(v.vr.state())) return *this;
 
+	bool judge_did_vote = false;
 	for (int i = 0; i < 10; ++i)
 	{
-		if (v.states[i] == v.vr.state())
-			continue;
-		if (!participate(v.states[i]))
-			continue;
+		if (v.states[i] == "") break;
+		if (v.states[i] == v.vr.state()) continue;
+		if (!participate(v.states[i])) continue;
 
-		bool judge_did_vote = false;
-		for (int j = 0; j < (this->maxParticipants); ++j)
+		int j = 0;
+		while ((j < this->maxParticipants) && (contest_arr[j].participant_ptr != nullptr))
 		{
 			if (contest_arr[j].participant_ptr->state() == v.states[i])
-			{ //todo: not sure if it's enough
-				if (i == 0)
-					contest_arr[j].judge_votes += 12;
-				if (i == 1)
-					contest_arr[j].judge_votes += 10;
-				else
-					contest_arr[j].judge_votes += (10 - i);
-
+			{
+				if (i == 0) contest_arr[j].judge_votes += 12;
+				if (i == 1) contest_arr[j].judge_votes += 10;
+				else contest_arr[j].judge_votes += (10 - i);
 				judge_did_vote = true;
 			}
+			j++;
 		}
 
-		if (judge_did_vote)
-			++(v.vr);
+		if (judge_did_vote) ++(v.vr);
 	}
 	return *this;
 }
-
 
 //MainControl-------------------------------------------------------------------
 MainControl::MainControl(int maxSongLength, int maxParticipants,
@@ -240,12 +231,10 @@ MainControl& MainControl::operator+=(Participant& participant)
 	if (!is_valid) return *this;
 
 
-
-	
 	//adding the participantWVotes member to the contest_array
+
 	int i = 0;
-	/*string st1 = this->contest_arr[i].participant_ptr->state();
-	string st2 = participant.state();*/
+	//advancing i till the place where it's need to be added
 	while (this->contest_arr[i].participant_ptr != nullptr &&
 			this->contest_arr[i].participant_ptr->state()
 			.compare(participant.state()) < 0)
@@ -261,7 +250,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 	}
 	else
 	{
-		//advancing the i towards the end
+		//advancing the i towards the last participant (not the end of the arr)
 		while (this->contest_arr[i].participant_ptr != nullptr)
 			i++;
 		//running from the end backwards and swapping with nullptr(thus making 1 free slot to enter the new state)
@@ -273,6 +262,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 		// reached to the place where needs to add the participant
 		//and adding it
 		//todo: check if i didn't miss by +1 / -1 the correct index
+		participant.updateRegistered(true);
 		contest_arr[i].participant_ptr = &participant;
 		return *this;
 	}
