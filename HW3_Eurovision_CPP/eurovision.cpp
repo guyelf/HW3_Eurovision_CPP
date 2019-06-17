@@ -343,11 +343,14 @@ ostream& operator<<(ostream& os, const Participant& p)
 ostream& operator<<(ostream& os, const Voter& v) {
 	switch (v.voterType())
 	{
-	//	case 0: break;//todo: add ALL here when ready
+		case 0: 
+			return os << "Entered to the ALL option";//todo: adda normal ALL here when ready
 		case 1:
 			return os << '<' << v.state() << '/' << "Regular" << '>';
 		case 2:
 			return  os << '<' << v.state() << '/' << "Judge" << '>';
+		default:
+			return os << "Entered Default option in switch statement";
 	}
 	return os;
 }
