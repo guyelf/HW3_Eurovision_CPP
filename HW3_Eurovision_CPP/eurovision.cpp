@@ -276,15 +276,23 @@ MainControl& MainControl::operator-=(Participant& participant)
 		this->isParticipantRegistered(participant);
 	if (!is_valid_state) return *this;
 
-	for (int i = 0; i < maxParticipants; i++)
+	
+	//the state is registered for sure (was checked)
+	int i = 0;
+	while(this->contest_arr[i].participant_ptr->state() != participant.state())		
+		i++;
+	
+	//exist the loop and remove the current state 
+	participant.updateRegistered(false);
+	this->contest_arr[i].participant_ptr = nullptr;
+
+	//update the order in the array accordingaly
+	while(this->contest_arr[i+1].participant_ptr != nullptr)
 	{
-		if(this->contest_arr[i].participant_ptr->state() == participant.state())
-		{
-			participant.updateRegistered(false);
-			this->contest_arr[i].participant_ptr = nullptr;
-			break;
-		}
+		swap(this->contest_arr[i], this->contest_arr[i + 1]);
+		i++;
 	}
+
 	return *this;
 }
 
