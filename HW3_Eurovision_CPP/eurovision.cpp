@@ -338,7 +338,14 @@ ostream& operator<<(ostream& os, const Participant& p)
 
 //prints the data of a voter
 ostream& operator<<(ostream& os, const Voter& v) {
-	return os << '<' << v.state() << '/' << v.voterType() << '>';
+	switch (v.voterType())
+	{
+		case 0: break;//todo: add ALL here when ready
+		case 1:
+			return os << '<' << "Regular" << '/' << v.voterType() << '>';
+		case 2:
+			return  os << '<' << "Judge" << '/' << v.voterType() << '>';
+	}
 }
 
 
@@ -348,10 +355,10 @@ ostream& operator<<(ostream& os, const Voter& v) {
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 	os << "{" << endl;
-	os << eurovision.phase << endl;
-	
+
 	if (eurovision.phase == Registration)
 		{
+		os << "Registration" << endl;
 			for (int i = 0; i < eurovision.maxParticipants; i++)
 			{
 				if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
@@ -366,6 +373,7 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 		}
 	else
 	{
+		os << "Voting" << endl;
 		for (int i = 0; i < eurovision.maxParticipants; i++)
 		{
 			if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
