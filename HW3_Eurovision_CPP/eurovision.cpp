@@ -52,7 +52,9 @@ void Participant::update(const string song, const int timeLength, const string s
 }
 //Voter-------------------------------------------------------------------------
 
-Voter::Voter(string state, VoterType voterType) : state_name(state) {
+Voter::Voter(string state, VoterType voterType) : state_name(state), 
+times_of_votes(0) 
+{	
 	this->voter_type = voterType;
 }
 
