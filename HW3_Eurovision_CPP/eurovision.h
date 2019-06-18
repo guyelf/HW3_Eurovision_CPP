@@ -1,6 +1,7 @@
 #ifndef EUROVISION_H_
 #define EUROVISION_H_
 
+#include <iostream>
 #include <string>
 
 // it's allowed to define here any using statements, according to needs.
@@ -17,15 +18,15 @@ enum Phase { Registration, Contest, Voting };
 
 //---------------------------------------------------
 
- class Participant
+class Participant
 {
 	// relevant private members can be defined here, if necessary.
 
-	 const string state_name;
-	 string song_name;
-	 int song_duration;
-	 string singer_name;
-	 bool is_registered;
+	const string state_name;
+	string song_name;
+	int song_duration;
+	string singer_name;
+	bool is_registered;
 
 public:
 
@@ -35,12 +36,12 @@ public:
 	string singer() const;
 	bool isRegistered() const;
 
-	Participant(const string state,const string song,const int timeLength,const string singer);
+	Participant(const string state, const string song, const int timeLength, const string singer);
 	~Participant() = default;
 	Participant(Participant& p) = delete;
-	
+
 	void updateRegistered(bool status);
-	void update(const string song,const int timeLength,const string singer);
+	void update(const string song, const int timeLength, const string singer);
 
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
@@ -65,11 +66,11 @@ public:
 	Voter(string state, VoterType voterType = Regular);
 	~Voter() = default;
 	Voter(Voter& v) = delete;
-	
+
 	string state() const;
 	VoterType voterType() const;
 	int timesOfVotes() const;
-	
+
 	Voter& operator++();
 
 	// need to define here possibly c'tr and d'tr and ONLY methods that
@@ -88,7 +89,7 @@ struct ParticipantWVotes
 	int reg_votes;
 	int judge_votes;
 
-	explicit ParticipantWVotes(Participant* p= nullptr, int regular_votes = 0, int judge_votes = 0);
+	explicit ParticipantWVotes(Participant* p = nullptr, int regular_votes = 0, int judge_votes = 0);
 	//ParticipantWVotes(ParticipantWVotes& s) = delete;
 	~ParticipantWVotes() = default;
 };
@@ -100,9 +101,9 @@ struct Vote
 	Voter& vr;
 	string* states;
 
-	Vote(Voter& vr, string s1 = "", string s2 = "", string s3 = "", 
-		string s4 = "",string s5 = "", string s6 = "", string s7 = "", 
-		string s8 = "",string s9 = "", string s10 = ""); 
+	Vote(Voter& vr, string s1 = "", string s2 = "", string s3 = "",
+		string s4 = "", string s5 = "", string s6 = "", string s7 = "",
+		string s8 = "", string s9 = "", string s10 = "");
 
 	Vote(Vote& v) = delete;
 	Vote& operator=(const Vote&) = delete;
@@ -132,9 +133,9 @@ class MainControl
 	int getParticipatingNum() const;
 public:
 
-	MainControl(int maxSongLength=180, int maxParticipants=26, int maxRegularVotes=5);
+	MainControl(int maxSongLength = 180, int maxParticipants = 26, int maxRegularVotes = 5);
 	void setPhase(Phase phase);
-	~MainControl() ;
+	~MainControl();
 
 	bool legalParticipant(const Participant& p) const;
 
@@ -156,11 +157,10 @@ public:
 	//friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 };
 
-ostream& operator<<(ostream& os ,const Participant& p);
+ostream& operator<<(ostream& os, const Participant& p);
 ostream& operator<<(ostream& os, const Voter& v);
 ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 // -----------------------------------------------------------
 
 #endif
-

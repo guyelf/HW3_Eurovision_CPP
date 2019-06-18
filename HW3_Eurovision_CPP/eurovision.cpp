@@ -42,7 +42,7 @@ void Participant::updateRegistered(bool status)
 void Participant::update(const string song, const int timeLength, const string singer)
 {
 	if (isRegistered()) return;
-	
+
 	if (song != "")
 		this->song_name = song;
 	if (timeLength != 0)
@@ -52,9 +52,9 @@ void Participant::update(const string song, const int timeLength, const string s
 }
 //Voter-------------------------------------------------------------------------
 
-Voter::Voter(string state, VoterType voterType) : state_name(state), 
-times_of_votes(0) 
-{	
+Voter::Voter(string state, VoterType voterType) : state_name(state),
+times_of_votes(0)
+{
 	this->voter_type = voterType;
 }
 
@@ -71,16 +71,14 @@ int Voter::timesOfVotes() const {
 }
 
 Voter& Voter::operator++() {
-	if (this->voter_type == Regular) {
-		this->times_of_votes += 1;
-	}
+	this->times_of_votes += 1;
 	return *this;
 }
 //Vote--------------------------------------------------------------------------
 
 Vote::Vote(Voter& vr, string s1, string s2, string s3, string s4, string s5,
-	string s6, string s7, string s8, string s9, string s10) : vr(vr), 
-	states(new string[10]{ s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 }){}
+	string s6, string s7, string s8, string s9, string s10) : vr(vr),
+	states(new string[10]{ s1, s2, s3, s4, s5, s6, s7, s8, s9, s10 }) {}
 
 Vote::~Vote()
 {
@@ -114,11 +112,11 @@ MainControl& MainControl::operator+=(const Vote &v)
 	//Judges:
 	if (v.vr.timesOfVotes() > 0) return *this;
 	if (!participate(v.vr.state())) return *this;
-
-	bool judge_did_vote = false;
+	
+	bool judge_vote = false;
 	for (int i = 0; i < 10; ++i)
 	{
-		if (v.states[i] == "") break;
+		if (v.states[i] == "") break; //end of the existing states
 		if (v.states[i] == v.vr.state()) continue;
 		if (!participate(v.states[i])) continue;
 
@@ -130,13 +128,14 @@ MainControl& MainControl::operator+=(const Vote &v)
 				if (i == 0) contest_arr[j].judge_votes += 12;
 				else if (i == 1) contest_arr[j].judge_votes += 10;
 				else contest_arr[j].judge_votes += (10 - i);
-				judge_did_vote = true;
+
+				judge_vote = true;
 			}
 			j++;
 		}
-
-		if (judge_did_vote) ++(v.vr);
 	}
+
+	if (judge_vote) ++v.vr;
 	return *this;
 }
 
@@ -178,7 +177,7 @@ bool MainControl::isContestFull()
 int MainControl::getParticipatingNum() const
 {
 	int i = 0;
-	while(this->contest_arr[i].participant_ptr)
+	while (this->contest_arr[i].participant_ptr)
 	{
 		i++;
 	}
@@ -188,7 +187,7 @@ int MainControl::getParticipatingNum() const
 bool MainControl::isParticipantRegistered(const Participant& participant)
 {
 	int i = 0;
-	while(contest_arr[i].participant_ptr != nullptr)
+	while (contest_arr[i].participant_ptr != nullptr)
 	{
 		if (contest_arr[i].participant_ptr->state() == participant.state() &&
 			contest_arr[i].participant_ptr->singer() == participant.singer() &&
@@ -204,9 +203,9 @@ bool MainControl::isParticipantRegistered(const Participant& participant)
 bool MainControl::participate(string state_name) const
 {
 	int i = 0;
-	while(this->contest_arr[i].participant_ptr != nullptr)
+	while (this->contest_arr[i].participant_ptr != nullptr)
 	{
-		if(this->contest_arr[i].participant_ptr->state() == state_name)
+		if (this->contest_arr[i].participant_ptr->state() == state_name)
 			return true;
 
 		i++;
@@ -218,8 +217,8 @@ bool MainControl::participate(string state_name) const
 //MainControl& MainControl::operator+=(Participant& participant)
 //{
 ////checks that all the prerequisites for the participant and eurovision are valid
-//	const bool is_valid = this->legalParticipant(participant) && 
-//		this->phase == Registration && !isContestFull() && 
+//	const bool is_valid = this->legalParticipant(participant) &&
+//		this->phase == Registration && !isContestFull() &&
 //		!isParticipantRegistered(participant);
 //
 //	if (!is_valid) return *this;
@@ -243,7 +242,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 	//checks that all the prerequisites for the participant and eurovision are valid
 	const bool is_valid = this->legalParticipant(participant) &&
 		this->phase == Registration && !isContestFull() &&
-		!isParticipantRegistered(participant);
+		!participate(participant.state());
 
 	if (!is_valid) return *this;
 
@@ -253,8 +252,8 @@ MainControl& MainControl::operator+=(Participant& participant)
 	int i = 0;
 	//advancing i till the place where it's need to be added
 	while (this->contest_arr[i].participant_ptr != nullptr &&
-			this->contest_arr[i].participant_ptr->state()
-			.compare(participant.state()) < 0)
+		this->contest_arr[i].participant_ptr->state()
+		.compare(participant.state()) < 0)
 		i++;
 
 	//separate into 2 cases:
@@ -271,7 +270,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 		while (this->contest_arr[i].participant_ptr != nullptr)
 			i++;
 		//running from the end backwards and swapping with nullptr(thus making 1 free slot to enter the new state)
-		while(i>j)
+		while (i > j)
 		{
 			swap(contest_arr[i], contest_arr[i - 1]);
 			i--;
@@ -293,18 +292,18 @@ MainControl& MainControl::operator-=(Participant& participant)
 		this->isParticipantRegistered(participant);
 	if (!is_valid_state) return *this;
 
-	
+
 	//the state is registered for sure (was checked)
 	int i = 0;
-	while(this->contest_arr[i].participant_ptr->state() != participant.state())		
+	while (this->contest_arr[i].participant_ptr->state() != participant.state())
 		i++;
-	
-	//exist the loop and remove the current state 
+
+	//exist the loop and remove the current state
 	participant.updateRegistered(false);
 	this->contest_arr[i].participant_ptr = nullptr;
 
 	//update the order in the array accordingly
-	while(this->contest_arr[i+1].participant_ptr != nullptr)
+	while (this->contest_arr[i + 1].participant_ptr != nullptr)
 	{
 		swap(this->contest_arr[i], this->contest_arr[i + 1]);
 		i++;
@@ -323,7 +322,7 @@ MainControl::~MainControl()
 //ParticipantWVotes -----------------------------------------------------------
 
 ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
-													 int judge_votes) :
+	int judge_votes) :
 	participant_ptr(p), reg_votes(regular_votes), judge_votes(judge_votes) {}
 
 
@@ -343,14 +342,14 @@ ostream& operator<<(ostream& os, const Participant& p)
 ostream& operator<<(ostream& os, const Voter& v) {
 	switch (v.voterType())
 	{
-		case 0: 
-			return os << "Entered to the ALL option";//todo: adda normal ALL here when ready
-		case 1:
-			return os << '<' << v.state() << '/' << "Regular" << '>';
-		case 2:
-			return  os << '<' << v.state() << '/' << "Judge" << '>';
-		default:
-			return os << "Entered Default option in switch statement";
+	case 0: 
+		return os << "ALL Option was chosen";//todo: fix appropriately
+	case 1:
+		return os << '<' << v.state() << '/' << "Regular" << '>';
+	case 2:
+		return  os << '<' << v.state() << '/' << "Judge" << '>';
+	default:
+		return os << "ENTERED DEFAULT IN ENUM";
 	}
 	return os;
 }
@@ -364,20 +363,20 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 	os << "{" << endl;
 
 	if (eurovision.phase == Registration)
-		{
+	{
 		os << "Registration" << endl;
-			for (int i = 0; i < eurovision.maxParticipants; i++)
-			{
-				if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
-				os << "[" << eurovision.contest_arr[i].participant_ptr->state() << "/";
-				os << eurovision.contest_arr[i].participant_ptr->song() << "/";
-				os << eurovision.contest_arr[i].participant_ptr->timeLength() << "/";
-				os << eurovision.contest_arr[i].participant_ptr->singer() << "]" << endl;
-			}
-
-			os << "}" << endl;
-			return os;
+		for (int i = 0; i < eurovision.maxParticipants; i++)
+		{
+			if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
+			os << "[" << eurovision.contest_arr[i].participant_ptr->state() << "/";
+			os << eurovision.contest_arr[i].participant_ptr->song() << "/";
+			os << eurovision.contest_arr[i].participant_ptr->timeLength() << "/";
+			os << eurovision.contest_arr[i].participant_ptr->singer() << "]" << endl;
 		}
+
+		os << "}" << endl;
+		return os;
+	}
 	else
 	{
 		os << "Voting" << endl;
@@ -386,11 +385,10 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 			if (eurovision.contest_arr[i].participant_ptr == nullptr) break;
 			os << eurovision.contest_arr[i].participant_ptr->state() << " : ";
 			os << "Regular(" << eurovision.contest_arr[i].reg_votes << ") ";
-			os << "Judge(" << eurovision.contest_arr[i].judge_votes << ")" <<endl;
+			os << "Judge(" << eurovision.contest_arr[i].judge_votes << ")" << endl;
 		}
 
 		os << "}" << endl;
 		return os;
 	}
 }
-
