@@ -372,6 +372,8 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 	}
 }
 
+
+
 //Part B.1
 using std::list;
 template<typename T_Iterator>
@@ -421,7 +423,11 @@ ParticipantWVotes* MainControl::begin()
 
 ParticipantWVotes* MainControl::end()
 {
-	return (this->contest_arr+this->maxParticipants);
+	int count = 0;
+	while (this->contest_arr[count].participant_ptr != nullptr)
+		count++;
+
+	return (this->contest_arr+count);
 }
 
 MainControl::Iterator& MainControl::operator++()
@@ -432,11 +438,23 @@ MainControl::Iterator& MainControl::operator++()
 	return temp;
 }
 
+
 bool MainControl::operator==(const Iterator& i) const
 {
 	if ((this->contest_arr + _iterator)->participant_ptr->state() == i->participant_ptr->state())
 		return true;
 
 	return false;
+}
+
+//doesn't reconize *Iterator as PWV
+//ostream& operator<<(ostream& os, const MainControl::Iterator& iterator)
+//{
+//	return os << (iterator->participant_ptr);
+//}
+
+ostream& operator<<(ostream& os, const ParticipantWVotes& pwv)
+{
+	return os << (*pwv.participant_ptr);
 }
 

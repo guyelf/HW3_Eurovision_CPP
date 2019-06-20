@@ -167,17 +167,18 @@ public:
 
 	Iterator begin();
 	Iterator end();
-	bool operator==(const Iterator& i) const;
+	bool operator==(const Iterator& iterator) const;
 	Iterator& operator++();
+
 };
 
 ostream& operator<<(ostream& os, const Participant& p);
 ostream& operator<<(ostream& os, const Voter& v);
 ostream& operator<<(ostream& os, const MainControl& eurovision);
 
-//Todo: implement this
-ostream& operator<<(ostream& os, const MainControl::Iterator& iterator);
 
+//ostream& operator<<(ostream& os, const MainControl::Iterator& iterator);
+ostream& operator<<(ostream& os, const ParticipantWVotes& pwv);
 // -----------------------------------------------------------
 //Part B:
 
