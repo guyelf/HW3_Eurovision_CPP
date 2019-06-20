@@ -140,6 +140,7 @@ MainControl& MainControl::operator+=(const Vote &v)
 	return *this;
 }
 
+
 //MainControl-------------------------------------------------------------------
 MainControl::MainControl(int maxSongLength, int maxParticipants,
 	int maxRegularVotes) : maxSongLength(maxSongLength),
@@ -213,29 +214,6 @@ bool MainControl::participate(string state_name) const
 	}
 	return false;
 }
-
-// not ordered insertion
-//MainControl& MainControl::operator+=(Participant& participant)
-//{
-////checks that all the prerequisites for the participant and eurovision are valid
-//	const bool is_valid = this->legalParticipant(participant) &&
-//		this->phase == Registration && !isContestFull() &&
-//		!isParticipantRegistered(participant);
-//
-//	if (!is_valid) return *this;
-//
-////adding the participantWVotes member to the contest_array
-//for (int i = 0; i < this->maxParticipants; ++i)
-//{
-//	if(this->contest_arr[i].participant_ptr==nullptr)
-//	{
-//		participant.updateRegistered(true);
-//		this->contest_arr[i].participant_ptr = &participant;
-//		break;
-//	}
-//}
-//return *this;
-//}
 
 //ordered insertion:
 MainControl& MainControl::operator+=(Participant& participant)
@@ -396,17 +374,17 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 
 //Part B.1
 using std::list;
-template<typename Iterator>
-Iterator Get(Iterator begin, Iterator end, int place)
+template<typename T_Iterator>
+T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
 {
 	//validity check
 	if (begin == end || place < 1)
 		return end;
 
 	int size = 0;
-	list<Iterator*> temp_list;
+	list<T_Iterator*> temp_list;
 	
-	for (Iterator i = begin; i != end; ++i)
+	for (T_Iterator i = begin; i != end; ++i)
 	{
 		temp_list.push_back(*i);
 		size++;
@@ -423,12 +401,42 @@ Iterator Get(Iterator begin, Iterator end, int place)
 		temp_list.pop_back();
 	}
 
-	Iterator* result_value = temp_list.back();
+	T_Iterator* result_value = temp_list.back();
 
-	for (Iterator i = begin; i != end; ++i)
+	for (T_Iterator i = begin; i != end; ++i)
 	{
 		if (*i == result_value)
 			return i;
 	}
 	return end;
 }
+
+//Part B.2
+
+
+ParticipantWVotes* MainControl::begin()
+{
+	return this->contest_arr;
+}
+
+ParticipantWVotes* MainControl::end()
+{
+	return (this->contest_arr+this->maxParticipants);
+}
+
+MainControl::Iterator& MainControl::operator++()
+{
+	//Maybe a handle of out of memory exception is needed here
+	this->_iterator++;
+	Iterator temp = this->contest_arr + _iterator;
+	return temp;
+}
+
+bool MainControl::operator==(const Iterator& i) const
+{
+	if ((this->contest_arr + _iterator)->participant_ptr->state() == i->participant_ptr->state())
+		return true;
+
+	return false;
+}
+

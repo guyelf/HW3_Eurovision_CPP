@@ -344,6 +344,6 @@ int main()
 		eurovision += Vote(vj1, "Cyprus", "UK", "Australia");
 	/* example of voting of a Judge */
 	cout << eurovision << endl;
-
+	
 	return 0;
 }

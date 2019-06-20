@@ -126,6 +126,8 @@ class MainControl
 	const int maxRegularVotes;
 	ParticipantWVotes* contest_arr;
 
+	int _iterator = 0;
+
 	//checks if the contest array is full
 	bool isContestFull();
 	//checks if the given participant is already registered in the system
@@ -149,18 +151,41 @@ public:
 
 
 	friend ostream& operator<<(ostream& os, const MainControl& eurovision);
-	// need to define here possibly c'tr and d'tr and ONLY methods that
-	// are mentioned and demonstrated in the test example that has been published.
-	// NO OTHER METHODS SHOULD APPEAR HERE.
 
-	// Also it's allowed here to define friend.
-	//friend ostream& operator<<(ostream& os, const MainControl& eurovision);
+	typedef ParticipantWVotes* Iterator;
+	////Plan B
+	//class Iterator
+	//{
+	//	Iterator();
+	//	~Iterator() = default;
+	//public:
+	//	ParticipantWVotes* begin();
+	//	ParticipantWVotes* end();
+	//	bool operator==(const Iterator& i) const;
+	//	Iterator& operator++();
+	//};
+
+	Iterator begin();
+	Iterator end();
+	bool operator==(const Iterator& i) const;
+	Iterator& operator++();
 };
 
 ostream& operator<<(ostream& os, const Participant& p);
 ostream& operator<<(ostream& os, const Voter& v);
 ostream& operator<<(ostream& os, const MainControl& eurovision);
 
+//Todo: implement this
+ostream& operator<<(ostream& os, const MainControl::Iterator& iterator);
+
 // -----------------------------------------------------------
+//Part B:
+
+//B.1
+template<typename Iterator>
+Iterator Get(Iterator begin, Iterator end, int place);
+// -----------------------------------------------------------
+
+
 
 #endif
