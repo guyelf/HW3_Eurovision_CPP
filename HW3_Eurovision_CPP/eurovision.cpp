@@ -1,4 +1,5 @@
 #include "eurovision.h"
+#include <list>
 
 //Participant-------------------------------------------------------------------
 
@@ -391,4 +392,43 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 		os << "}" << endl;
 		return os;
 	}
+}
+
+//Part B.1
+using std::list;
+template<typename Iterator>
+Iterator Get(Iterator begin, Iterator end, int place)
+{
+	//validity check
+	if (begin == end || place < 1)
+		return end;
+
+	int size = 0;
+	list<Iterator*> temp_list;
+	
+	for (Iterator i = begin; i != end; ++i)
+	{
+		temp_list.push_back(*i);
+		size++;
+	}
+
+	//validity check- size is not available before the loop
+	if (size < place)
+		return end;
+	//list is sorted in ascending order
+	temp_list.sort();
+	
+	for (int i =0; i < place-1; ++i)
+	{
+		temp_list.pop_back();
+	}
+
+	Iterator* result_value = temp_list.back();
+
+	for (Iterator i = begin; i != end; ++i)
+	{
+		if (*i == result_value)
+			return i;
+	}
+	return end;
 }
