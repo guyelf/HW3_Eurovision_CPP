@@ -16,6 +16,7 @@ using std::swap;
 enum VoterType { All, Regular, Judge };
 enum Phase { Registration, Contest, Voting };
 
+
 //---------------------------------------------------
 
 class Participant
@@ -94,6 +95,9 @@ struct ParticipantWVotes
 	~ParticipantWVotes() = default;
 };
 
+//Helper function: swap for ParticipantWvotes
+//Helper Swap - still requires a bit of modification for it run.
+//void swap(struct ParticipantWithVotes* p1, struct ParticipantWithVotes* p2);
 
 // -----------------------------------------------------------
 struct Vote
@@ -148,6 +152,8 @@ public:
 	MainControl& operator-=(Participant &participant);
 
 	MainControl& operator+=(const Vote& vote);
+	//B.3
+	string operator()(const int place, const VoterType vt) const;
 
 
 	friend ostream& operator<<(ostream& os, const MainControl& eurovision);

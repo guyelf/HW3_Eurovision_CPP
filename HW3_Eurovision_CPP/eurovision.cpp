@@ -1,6 +1,8 @@
 #include "eurovision.h"
 #include <list>
-
+#include <vector>
+#include <iterator>
+using std::list;
 //Participant-------------------------------------------------------------------
 
 Participant::Participant(const string state, const string song, const int timeLength, const string singer)
@@ -304,7 +306,14 @@ ParticipantWVotes::ParticipantWVotes(Participant* p, int regular_votes,
 	int judge_votes) :
 	participant_ptr(p), reg_votes(regular_votes), judge_votes(judge_votes) {}
 
-
+//Helper function swap for ParticipantWvotes
+//still requires a bit of modification in order for it to run
+//void swap(ParticipantWithVotes* p1, ParticipantWithVotes* p2)
+//{
+//	ParticipantWithVotes temp = *p1;
+//	*p1 = *p2;
+//	*p2 = temp;
+//}
 
 // overloading of the << operator-----------------------------------------------
 
@@ -373,9 +382,7 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 }
 
 
-
-//Part B.1
-using std::list;
+//B.1
 template<typename T_Iterator>
 T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
 {
@@ -384,8 +391,9 @@ T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
 		return end;
 
 	int size = 0;
-	list<T_Iterator*> temp_list;
-	
+	//gets the value the type that the iterator points to
+	list<typename std::iterator_traits<T_Iterator>::value_type> temp_list;
+
 	for (T_Iterator i = begin; i != end; ++i)
 	{
 		temp_list.push_back(*i);
@@ -393,17 +401,18 @@ T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
 	}
 
 	//validity check- size is not available before the loop
-	if (size < place)
+	if (size <= place)
 		return end;
 	//list is sorted in ascending order
 	temp_list.sort();
-	
-	for (int i =0; i < place-1; ++i)
+
+	for (int i = 0; i < place - 1; ++i)
 	{
 		temp_list.pop_back();
 	}
 
-	T_Iterator* result_value = temp_list.back();
+	typename std::iterator_traits<T_Iterator>::value_type result_value = 
+	temp_list.back();
 
 	for (T_Iterator i = begin; i != end; ++i)
 	{
@@ -447,14 +456,150 @@ bool MainControl::operator==(const Iterator& i) const
 	return false;
 }
 
-//doesn't reconize *Iterator as PWV
-//ostream& operator<<(ostream& os, const MainControl::Iterator& iterator)
-//{
-//	return os << (iterator->participant_ptr);
-//}
 
 ostream& operator<<(ostream& os, const ParticipantWVotes& pwv)
 {
 	return os << (*pwv.participant_ptr);
 }
+
+
+//Part B.3
+using std::vector;
+//string MainControl::operator()(const int place, const VoterType vt) const
+//{
+//	vector<int> votes;
+//	int winner_votes;
+//	string result = "";
+//
+//	if (vt == Regular)
+//	{
+//		int i = 0;
+//		while (this->contest_arr[i].participant_ptr != nullptr) {
+//			int temp_vote = this->contest_arr[i].reg_votes;
+//			votes.push_back(temp_vote);
+//			i++;
+//		}
+//		if (i == 0)
+//			return result;
+//		
+//		auto get_result = Get(votes.begin(), votes.end(), place);
+//		if (get_result == votes.end()) return result;
+//
+//		winner_votes = *get_result;
+//
+//		//i is pointing to the end location
+//		for (--i; i >= 0; i--)
+//		{
+//			if (this->contest_arr[i].reg_votes == winner_votes) {
+//				result = this->contest_arr[i].participant_ptr->state();
+//				return result;
+//			}
+//		}
+//	}
+//	if (vt == Judge)
+//	{
+//		int i = 0;
+//		while (this->contest_arr[i].participant_ptr != nullptr) {
+//			int temp = this->contest_arr[i].judge_votes;
+//			votes.push_back(temp);
+//			i++;
+//		}
+//		if (i == 0)
+//			return result;
+//
+//		auto get_result = Get(votes.begin(), votes.end(), place);
+//		if (get_result == votes.end()) return result;
+//
+//		winner_votes = *get_result;
+//
+//		//i is pointing to the end location
+//		for (--i; i >= 0; i--)
+//		{
+//			if (this->contest_arr[i].judge_votes == winner_votes) {
+//				result = this->contest_arr[i].participant_ptr->state();
+//				return result;
+//			}
+//		}
+//	}
+//	else
+//	{
+//		int i = 0;
+//		while (this->contest_arr[i].participant_ptr != nullptr) {
+//			int temp = (this->contest_arr[i].reg_votes) + (this->contest_arr[i].judge_votes);
+//			votes.push_back(temp);
+//			i++;
+//		}
+//		if (i == 0)
+//			return result;
+//
+//		auto get_result = Get(votes.begin(), votes.end(), place);
+//		if (get_result == votes.end()) return result;
+//
+//		winner_votes = *get_result;
+//
+//		//i is pointing to the end location
+//		for (--i; i >= 0; i--)
+//		{
+//			if ((this->contest_arr[i].reg_votes) + (this->contest_arr[i].judge_votes) == winner_votes) {
+//				result = this->contest_arr[i].participant_ptr->state();
+//				return result;
+//			}
+//		}
+//	}
+//}
+//
+
+
+using std::vector;
+string MainControl::operator()(const int place, const VoterType vt) const
+{
+	vector<int> votes;
+	string result = "";
+
+	int i = 0;
+	while(this->contest_arr[i].participant_ptr != nullptr)
+	{
+		if (vt == Regular)
+			votes.push_back(this->contest_arr[i].reg_votes);
+		if (vt == Judge)
+			votes.push_back(this->contest_arr[i].judge_votes);
+		if(vt == All)
+			votes.push_back(this->contest_arr[i].reg_votes +
+								 this->contest_arr[i].judge_votes);
+		i++;
+	}
+	//sanity check
+	if (i == 0) 
+		return result;
+
+	//getting the desired place and checking if it's legal
+	auto get_result = Get(votes.begin(), votes.end(), place);
+	if (get_result == votes.end()) return result;
+
+	//getting the value out of the place
+	int winner_votes = *get_result;
+
+	//i is pointing to the end location
+	for (--i; i >= 0; i--)
+	{
+		if (vt == Regular && this->contest_arr[i].reg_votes == winner_votes) {
+			result = this->contest_arr[i].participant_ptr->state();
+			return result;
+		}
+		if (vt == Judge && this->contest_arr[i].judge_votes == winner_votes) {
+			result = this->contest_arr[i].participant_ptr->state();
+			return result;
+		}
+		if (vt == All && (this->contest_arr[i].reg_votes +
+			this->contest_arr[i].judge_votes) == winner_votes) {
+			result = this->contest_arr[i].participant_ptr->state();
+			return result;
+		}
+	}
+		return result;// result = "" didn't enter to any of the if statements
+}
+
+
+
+
 
