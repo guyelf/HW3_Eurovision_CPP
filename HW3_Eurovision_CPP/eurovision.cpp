@@ -401,7 +401,7 @@ T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
 	}
 
 	//validity check- size is not available before the loop
-	if (size <= place)
+	if (size < place) //come back here to add the <= sign
 		return end;
 	//list is sorted in ascending order
 	temp_list.sort();
@@ -550,10 +550,9 @@ using std::vector;
 //
 
 
-using std::vector;
 string MainControl::operator()(const int place, const VoterType vt) const
 {
-	vector<int> votes;
+	list<int> votes;
 	string result = "";
 
 	int i = 0;
@@ -572,32 +571,64 @@ string MainControl::operator()(const int place, const VoterType vt) const
 	if (i == 0) 
 		return result;
 
+
 	//getting the desired place and checking if it's legal
-	auto get_result = Get(votes.begin(), votes.end(), place);
+	auto const get_result = Get(votes.begin(), votes.end(), place);
 	if (get_result == votes.end()) return result;
 
+	//sorting to find the relative place of the result
+	votes.sort();
+
 	//getting the value out of the place
-	int winner_votes = *get_result;
+	int const chosen_votes = *get_result;
+
+	int relative_place = 0;
+	int j=0;
+	
+	//note: this loop destroys the votes list
+	while(j < place-1)
+	{
+		if (votes.back() == chosen_votes)
+			relative_place++;
+
+		j++;
+		votes.pop_back();
+	}
 
 	//i is pointing to the end location
 	for (--i; i >= 0; i--)
 	{
-		if (vt == Regular && this->contest_arr[i].reg_votes == winner_votes) {
-			result = this->contest_arr[i].participant_ptr->state();
-			return result;
+		if (vt == Regular &&  this->contest_arr[i].reg_votes == chosen_votes) {
+			
+			if(relative_place == 0)
+			{
+				result = this->contest_arr[i].participant_ptr->state();
+				return result;
+			}
+			relative_place--;
 		}
-		if (vt == Judge && this->contest_arr[i].judge_votes == winner_votes) {
-			result = this->contest_arr[i].participant_ptr->state();
-			return result;
+		if (vt == Judge && this->contest_arr[i].judge_votes == chosen_votes) {
+			if (relative_place == 0)
+			{
+				result = this->contest_arr[i].participant_ptr->state();
+				return result;
+			}
+			relative_place--;
 		}
 		if (vt == All && (this->contest_arr[i].reg_votes +
-			this->contest_arr[i].judge_votes) == winner_votes) {
-			result = this->contest_arr[i].participant_ptr->state();
-			return result;
+			this->contest_arr[i].judge_votes) == chosen_votes) {
+			if (relative_place == 0)
+			{
+				result = this->contest_arr[i].participant_ptr->state();
+				return result;
+			}
+			relative_place--;
 		}
 	}
 		return result;// result = "" didn't enter to any of the if statements
 }
+
+
 
 
 
