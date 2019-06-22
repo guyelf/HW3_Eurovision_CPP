@@ -1,6 +1,5 @@
 #include "eurovision.h"
 #include <list>
-#include <vector>
 #include <iterator>
 using std::list;
 //Participant-------------------------------------------------------------------
@@ -461,10 +460,7 @@ ostream& operator<<(ostream& os, const ParticipantWVotes& pwv)
 {
 	return os << (*pwv.participant_ptr);
 }
-
-
 //Part B.3
-using std::vector;
 //string MainControl::operator()(const int place, const VoterType vt) const
 //{
 //	vector<int> votes;
