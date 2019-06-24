@@ -117,11 +117,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Desktop\Eurovision CPP tests Part2\MTM TEST PART2 FALFUL\clion\finalTest.cpp" />
     <ClCompile Include="eurovision.cpp" />
+    <ClCompile Include="seat.cpp" />
     <ClCompile Include="test1.cpp" />
     <ClCompile Include="test2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h" />
+    <ClInclude Include="seat.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
