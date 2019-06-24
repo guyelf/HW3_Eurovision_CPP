@@ -24,6 +24,9 @@
     <ClCompile Include="test2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Desktop\Eurovision CPP tests Part2\MTM TEST PART2 FALFUL\clion\finalTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h">

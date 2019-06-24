@@ -206,7 +206,7 @@ bool MainControl::isParticipantRegistered(const Participant& participant)
 bool MainControl::participate(string state_name) const
 {
 	int i = 0;
-	while (this->contest_arr[i].participant_ptr != nullptr)
+	while (this->contest_arr[i].participant_ptr != nullptr && i < this->maxParticipants)
 	{
 		if (this->contest_arr[i].participant_ptr->state() == state_name)
 			return true;
@@ -231,7 +231,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 
 	int i = 0;
 	//advancing i till the place where it's need to be added
-	while (this->contest_arr[i].participant_ptr != nullptr &&
+	while (this->contest_arr[i].participant_ptr != nullptr && i<this->maxParticipants &&
 		this->contest_arr[i].participant_ptr->state()
 		.compare(participant.state()) < 0)
 		i++;
@@ -247,7 +247,7 @@ MainControl& MainControl::operator+=(Participant& participant)
 	else
 	{
 		//advancing the i towards the last participant (not the end of the arr)
-		while (this->contest_arr[i].participant_ptr != nullptr)
+		while (this->contest_arr[i].participant_ptr != nullptr && i<this->maxParticipants)
 			i++;
 		//running from the end backwards and swapping with nullptr(thus making 1 free slot to enter the new state)
 		while (i > j)
@@ -257,7 +257,6 @@ MainControl& MainControl::operator+=(Participant& participant)
 		}
 		// reached to the place where needs to add the participant
 		//and adding it
-		//todo: check if i didn't miss by +1 / -1 the correct index
 		participant.updateRegistered(true);
 		contest_arr[i].participant_ptr = &participant;
 		return *this;
@@ -269,7 +268,8 @@ MainControl& MainControl::operator+=(Participant& participant)
 MainControl& MainControl::operator-=(Participant& participant)
 {
 	const bool is_valid_state = this->phase == Registration &&
-		this->isParticipantRegistered(participant);
+		participant.isRegistered();
+		//this->isParticipantRegistered(participant);
 	if (!is_valid_state) return *this;
 
 
@@ -283,7 +283,8 @@ MainControl& MainControl::operator-=(Participant& participant)
 	this->contest_arr[i].participant_ptr = nullptr;
 
 	//update the order in the array accordingly
-	while (this->contest_arr[i + 1].participant_ptr != nullptr)
+	while (this->contest_arr[i + 1].participant_ptr != nullptr && 
+		   i+1<this->maxParticipants)
 	{
 		swap(this->contest_arr[i], this->contest_arr[i + 1]);
 		i++;
@@ -432,7 +433,8 @@ ParticipantWVotes* MainControl::begin()
 ParticipantWVotes* MainControl::end()
 {
 	int count = 0;
-	while (this->contest_arr[count].participant_ptr != nullptr)
+	while (this->contest_arr[count].participant_ptr != nullptr && 
+			count < this->maxParticipants)
 		count++;
 
 	return (this->contest_arr+count);
@@ -460,90 +462,7 @@ ostream& operator<<(ostream& os, const ParticipantWVotes& pwv)
 {
 	return os << (*pwv.participant_ptr);
 }
-//Part B.3
-//string MainControl::operator()(const int place, const VoterType vt) const
-//{
-//	vector<int> votes;
-//	int winner_votes;
-//	string result = "";
-//
-//	if (vt == Regular)
-//	{
-//		int i = 0;
-//		while (this->contest_arr[i].participant_ptr != nullptr) {
-//			int temp_vote = this->contest_arr[i].reg_votes;
-//			votes.push_back(temp_vote);
-//			i++;
-//		}
-//		if (i == 0)
-//			return result;
-//		
-//		auto get_result = Get(votes.begin(), votes.end(), place);
-//		if (get_result == votes.end()) return result;
-//
-//		winner_votes = *get_result;
-//
-//		//i is pointing to the end location
-//		for (--i; i >= 0; i--)
-//		{
-//			if (this->contest_arr[i].reg_votes == winner_votes) {
-//				result = this->contest_arr[i].participant_ptr->state();
-//				return result;
-//			}
-//		}
-//	}
-//	if (vt == Judge)
-//	{
-//		int i = 0;
-//		while (this->contest_arr[i].participant_ptr != nullptr) {
-//			int temp = this->contest_arr[i].judge_votes;
-//			votes.push_back(temp);
-//			i++;
-//		}
-//		if (i == 0)
-//			return result;
-//
-//		auto get_result = Get(votes.begin(), votes.end(), place);
-//		if (get_result == votes.end()) return result;
-//
-//		winner_votes = *get_result;
-//
-//		//i is pointing to the end location
-//		for (--i; i >= 0; i--)
-//		{
-//			if (this->contest_arr[i].judge_votes == winner_votes) {
-//				result = this->contest_arr[i].participant_ptr->state();
-//				return result;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		int i = 0;
-//		while (this->contest_arr[i].participant_ptr != nullptr) {
-//			int temp = (this->contest_arr[i].reg_votes) + (this->contest_arr[i].judge_votes);
-//			votes.push_back(temp);
-//			i++;
-//		}
-//		if (i == 0)
-//			return result;
-//
-//		auto get_result = Get(votes.begin(), votes.end(), place);
-//		if (get_result == votes.end()) return result;
-//
-//		winner_votes = *get_result;
-//
-//		//i is pointing to the end location
-//		for (--i; i >= 0; i--)
-//		{
-//			if ((this->contest_arr[i].reg_votes) + (this->contest_arr[i].judge_votes) == winner_votes) {
-//				result = this->contest_arr[i].participant_ptr->state();
-//				return result;
-//			}
-//		}
-//	}
-//}
-//
+
 
 
 string MainControl::operator()(const int place, const VoterType vt) const
@@ -552,7 +471,7 @@ string MainControl::operator()(const int place, const VoterType vt) const
 	string result = "";
 
 	int i = 0;
-	while(this->contest_arr[i].participant_ptr != nullptr)
+	while(this->contest_arr[i].participant_ptr != nullptr && i < this->maxParticipants)
 	{
 		if (vt == Regular)
 			votes.push_back(this->contest_arr[i].reg_votes);
