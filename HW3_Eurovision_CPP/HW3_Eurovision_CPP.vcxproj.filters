@@ -18,16 +18,10 @@
     <ClCompile Include="eurovision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Desktop\Eurovision CPP tests Part2\MTM TEST PART2 FALFUL\clion\finalTest.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="seat.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_part_c.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -115,11 +115,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\Eurovision CPP tests Part2\MTM TEST PART2 FALFUL\clion\finalTest.cpp" />
     <ClCompile Include="eurovision.cpp" />
     <ClCompile Include="seat.cpp" />
-    <ClCompile Include="test1.cpp" />
-    <ClCompile Include="test2.cpp" />
+    <ClCompile Include="test_part_c.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="eurovision.h" />

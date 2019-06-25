@@ -31,7 +31,7 @@ public:
 	virtual string location() const = 0;
 };
 
-// ---------------------------------------------
+// Green Room ---------------------------------------------
 class GreenRoomSeat:public Seat
 {
 public:
@@ -75,6 +75,9 @@ public:
 // ---------------------------------------------
 class DisablePodiumSeat:public SpecialSeat
 {
+
+public:
+	DisablePodiumSeat(int chair_num, int line_num,int base_price);
 	DisablePodiumSeat(int chair_num, int line_num);
 	~DisablePodiumSeat() = default;
 
@@ -82,30 +85,43 @@ class DisablePodiumSeat:public SpecialSeat
 	int price() const override;
 };
 
-// ---------------------------------------------
+//RegularSeat-------------------------------------------------------------------
 class RegularSeat:public MainHallSeat
 {
-
 protected:
 	char area;
 public:
-	RegularSeat() = default;
-	virtual ~RegularSeat();
+	RegularSeat(char area, int chair, int line, int base_price);
+	virtual ~RegularSeat() = default;
+	string location() const override = 0;
 };
 
-// ---------------------------------------------
-class FrontRegularSeat:public RegularSeat
+
+//FrontRegularSeat--------------------------------------------------------------
+class FrontRegularSeat :public RegularSeat
 {
+public:
+	FrontRegularSeat(char area, int chair, int line, int base_price);
+	~FrontRegularSeat() = default;
+	string location() const override;
 };
 
-// ---------------------------------------------
-class MiddleRegularSeat:public RegularSeat
+
+//MiddleRegularSeat-------------------------------------------------------------
+class MiddleRegularSeat :public RegularSeat
 {
+public:
+	MiddleRegularSeat(char area, int chair, int line, int base_price);
+	~MiddleRegularSeat() = default;
+	string location() const override;
 };
 
-// ---------------------------------------------
-class RearRegularSeat:public RegularSeat
+
+//RearRegularSeat---------------------------------------------------------------
+class RearRegularSeat :public RegularSeat
 {
+public:
+	RearRegularSeat(char area, int chair, int line, int base_price);
+	~RearRegularSeat() = default;
+	string location() const override;
 };
-
-// ---------------------------------------------
