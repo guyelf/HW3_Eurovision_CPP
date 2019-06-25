@@ -17,9 +17,6 @@ string Seat::location() const
 }
 
 //GreenRoom
-GreenRoomSeat::GreenRoomSeat(int line, int chair)
-:Seat(chair, line, -1){}
-
 int GreenRoomSeat::price() const
 {
 	throw NoPrice();
@@ -32,33 +29,24 @@ string GreenRoomSeat::location() const
 
 
 //Main Hall
-MainHallSeat::MainHallSeat(int chair_num, int line_num, int base_price)
-						  :Seat(chair_num,line_num,base_price+100){}
 
+//c'tor defined in the .h file
 
 //special seat
-SpecialSeat::SpecialSeat(int chair_num, int line_num,int base_price)
-:MainHallSeat(chair_num, line_num,base_price+300){}
+
+//c'tor
 
 //Golden Circle
-GoldenCircleSeat::GoldenCircleSeat(int chair, int num, int base_price)
-:SpecialSeat(chair, num,base_price+1000){}
-
-
 string GoldenCircleSeat::location() const
 {
 	return "Golden Circle-> " + SpecialSeat::location();
 }
 
-
-
 //Disable Podium
 //note base_price is fixed
-DisablePodiumSeat::DisablePodiumSeat(int chair_num, int line_num,int base_price)
-:SpecialSeat(chair_num,line_num,-1){}
 
-DisablePodiumSeat::DisablePodiumSeat(int chair_num, int line_num)
-:SpecialSeat(chair_num, line_num, -1){}
+//c'tor for 3 params 
+//c'tor for 2 params
 
 
 string DisablePodiumSeat::location() const
@@ -73,8 +61,6 @@ int DisablePodiumSeat::price() const
 }
 
 //RegularSeat-------------------------------------------------------------------
-RegularSeat::RegularSeat(char area, int chair, int line, int base_price) :
-	MainHallSeat(chair, line, base_price), area(area) {}
 
 string RegularSeat::location() const
 {
@@ -83,9 +69,6 @@ string RegularSeat::location() const
 
 
 //FrontRegularSeat--------------------------------------------------------------
-FrontRegularSeat::FrontRegularSeat(char area, int chair, int line,
-	int base_price) : RegularSeat(area, chair,
-		line, base_price + 500) {}
 
 string FrontRegularSeat::location() const
 {
@@ -94,9 +77,6 @@ string FrontRegularSeat::location() const
 
 
 //MiddleRegularSeat-------------------------------------------------------------
-MiddleRegularSeat::MiddleRegularSeat(char area, int chair, int line,
-	int base_price) : RegularSeat(area, chair,
-		line, base_price + 250) {}
 
 string MiddleRegularSeat::location() const
 {
@@ -105,9 +85,6 @@ string MiddleRegularSeat::location() const
 
 
 //RearRegularSeat---------------------------------------------------------------
-RearRegularSeat::RearRegularSeat(char area, int chair, int line,
-	int base_price) : RegularSeat(area, chair,
-		line, base_price) {}
 
 string RearRegularSeat::location() const
 {
