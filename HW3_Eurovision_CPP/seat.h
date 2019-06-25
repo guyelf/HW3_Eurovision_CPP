@@ -1,15 +1,15 @@
 #include <iostream>
 #include <string>
 using std::string;
-using std::exception;
+using std::runtime_error;
 
 
 // ---------------------------------------------
-class NoPrice:public exception
+class NoPrice:public runtime_error
 {
 
 public:
-	NoPrice():exception("Not For Sale !"){}
+	NoPrice():runtime_error("Not For Sale !"){}
 	virtual ~NoPrice()=default;
 };
 
@@ -25,7 +25,7 @@ protected:
 public:
 	Seat(int chair_num, int line_num, int base_price): chairNum(chair_num),
 								  lineNum(line_num),basePrice(base_price){}
-	virtual ~Seat();
+	virtual ~Seat() = default;
 
 	virtual int price() const;
 	virtual string location() const = 0;
@@ -50,8 +50,6 @@ public:
 	//use the c'tor of Seat and add 100 to the base_price
 	MainHallSeat(int chair_num, int line_num, int base_price);
 	virtual ~MainHallSeat() = default;
-
-	string location() const override;
 };
 
 
@@ -59,18 +57,29 @@ public:
 class SpecialSeat:public MainHallSeat
 {
 public:
-
+	SpecialSeat(int chair_num, int line_num,int base_price);
+	virtual ~SpecialSeat() = default;
+	int price() const override = 0;
 };
 
 // ---------------------------------------------
 class GoldenCircleSeat:public SpecialSeat
 {
+public:
+	GoldenCircleSeat(int chair, int line_num, int base_price);
+	~GoldenCircleSeat() = default;
+
+	string location() const override;
 };
 
 // ---------------------------------------------
 class DisablePodiumSeat:public SpecialSeat
 {
+	DisablePodiumSeat(int chair_num, int line_num);
+	~DisablePodiumSeat() = default;
 
+	string location() const override;
+	int price() const override;
 };
 
 // ---------------------------------------------
@@ -82,8 +91,6 @@ protected:
 public:
 	RegularSeat() = default;
 	virtual ~RegularSeat();
-	string location() const override;
-
 };
 
 // ---------------------------------------------

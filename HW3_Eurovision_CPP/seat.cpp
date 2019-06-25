@@ -28,7 +28,7 @@ int GreenRoomSeat::price() const
 
 string GreenRoomSeat::location() const
 {
-	return "Green Room-> " + this->location();
+	return "Green Room->" + this->location();
 }
 
 
@@ -36,7 +36,36 @@ string GreenRoomSeat::location() const
 MainHallSeat::MainHallSeat(int chair_num, int line_num, int base_price)
 						  :Seat(chair_num,line_num,base_price+100){}
 
-string MainHallSeat::location() const
+
+//special seat
+SpecialSeat::SpecialSeat(int chair_num, int line_num,int base_price)
+:MainHallSeat(chair_num, line_num,base_price){}
+
+
+//Golden Circle
+GoldenCircleSeat::GoldenCircleSeat(int chair, int num, int base_price)
+:SpecialSeat(chair, num,base_price+1000){}
+
+string GoldenCircleSeat::location() const
 {
-	return "Main Hall-> " + this->location();
+	return "Golden Circle->" + SpecialSeat::location();
 }
+
+
+
+//Disable Podium
+DisablePodiumSeat::DisablePodiumSeat(int chair_num, int line_num)
+:SpecialSeat(chair_num,line_num,-1){}
+
+
+string DisablePodiumSeat::location() const
+{
+	return "Disable Podium->" + SpecialSeat::location();
+}
+
+//price is fixed for 200
+int DisablePodiumSeat::price() const
+{
+	return 200;
+}
+
