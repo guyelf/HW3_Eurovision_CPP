@@ -64,7 +64,7 @@ int DisablePodiumSeat::price() const
 string RegularSeat::location() const
 {
 	string area_string = string(1,area);
-	return "area: " + area_string + " " + MainHallSeat::location();
+	return "area: " + area_string + ", " + MainHallSeat::location();
 }
 
 
