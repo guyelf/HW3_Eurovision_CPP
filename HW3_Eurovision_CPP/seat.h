@@ -5,64 +5,79 @@ using std::exception;
 
 
 // ---------------------------------------------
-class NoPrice:exception
+class NoPrice:public exception
 {
+
+public:
+	NoPrice():exception("Not For Sale !"){}
+	virtual ~NoPrice()=default;
 };
 
 // ---------------------------------------------
 class Seat
 {
+
+protected:
 	int chairNum;
 	int lineNum;
 	int basePrice;
 
 public:
-	Seat(int chair_num, int line_num, int base_price);
-	virtual  ~Seat();
+	Seat(int chair_num, int line_num, int base_price): chairNum(chair_num),
+								  lineNum(line_num),basePrice(base_price){}
+	virtual ~Seat();
 
-	virtual string location() const;
-	virtual int price() const = 0;
-	
+	virtual int price() const;
+	virtual string location() const = 0;
 };
 
 // ---------------------------------------------
-class GreenRoomSeat:Seat
+class GreenRoomSeat:public Seat
 {
 public:
+	GreenRoomSeat(int line, int chair);
+	//override to throw exception
 	int price() const override;
+	string location() const override;
 };
 
+
 // ---------------------------------------------
-class MainHallSeat:Seat
+class MainHallSeat:public Seat
 {
-	int mainHallPrice;
 
 public:
-	MainHallSeat();
-	virtual ~MainHallSeat();
-	int price() const override;
+	//use the c'tor of Seat and add 100 to the base_price
+	MainHallSeat(int chair_num, int line_num, int base_price);
+	virtual ~MainHallSeat() = default;
+
+	string location() const override;
 };
 
+
 // ---------------------------------------------
-class SpecialSeat:MainHallSeat
+class SpecialSeat:public MainHallSeat
 {
 public:
-	int price() const override;
+
 };
 
 // ---------------------------------------------
-class GoldenCircleSeat:SpecialSeat
+class GoldenCircleSeat:public SpecialSeat
 {
 };
 
 // ---------------------------------------------
-class DisablePodiumSeat:SpecialSeat
+class DisablePodiumSeat:public SpecialSeat
 {
+
 };
 
 // ---------------------------------------------
-class RegularSeat:MainHallSeat
+class RegularSeat:public MainHallSeat
 {
+
+protected:
 	char area;
 public:
 	RegularSeat() = default;
@@ -72,17 +87,17 @@ public:
 };
 
 // ---------------------------------------------
-class FrontRegularSeat:RegularSeat
+class FrontRegularSeat:public RegularSeat
 {
 };
 
 // ---------------------------------------------
-class MiddleRegularSeat:RegularSeat
+class MiddleRegularSeat:public RegularSeat
 {
 };
 
 // ---------------------------------------------
-class RearRegularSeat:RegularSeat
+class RearRegularSeat:public RegularSeat
 {
 };
 
