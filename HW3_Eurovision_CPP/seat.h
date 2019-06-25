@@ -23,8 +23,8 @@ protected:
 	int basePrice;
 
 protected:
-	Seat(int chair_num, int line_num, int base_price) :chairNum(chair_num),
-		lineNum(line_num), basePrice(base_price) {}
+	Seat(int line_num, int chair_num, int base_price) :chairNum(chair_num),
+		lineNum(line_num),basePrice(base_price){}
 public:
 	virtual ~Seat() = default;
 
@@ -36,7 +36,7 @@ public:
 class GreenRoomSeat:public Seat
 {
 public:
-	GreenRoomSeat(int line, int chair):Seat(chair, line, -1) {}
+	GreenRoomSeat(int line, int chair):Seat(line, chair, -1){}
 	//override to throw exception
 	int price() const override;
 	string location() const override;
@@ -46,11 +46,12 @@ public:
 // ---------------------------------------------
 class MainHallSeat:public Seat
 {
+protected:
+//use the c'tor of Seat and add 100 to the base_price
+MainHallSeat(int line_num, int chair_num, int base_price)
+:Seat(line_num, chair_num, base_price + 100) {}
 
 public:
-	//use the c'tor of Seat and add 100 to the base_price
-	MainHallSeat(int chair_num, int line_num, int base_price)
-	:Seat(chair_num, line_num, base_price + 100){}
 	virtual ~MainHallSeat() = default;
 };
 
@@ -59,8 +60,8 @@ public:
 class SpecialSeat:public MainHallSeat
 {
 protected:
-	SpecialSeat(int chair_num, int line_num, int base_price)
-		:MainHallSeat(chair_num, line_num, base_price + 300) {}
+	SpecialSeat(int line_num, int chair_num, int base_price)
+		:MainHallSeat(line_num, chair_num, base_price + 300) {}
 public:
 	virtual ~SpecialSeat() = default;
 };
@@ -69,8 +70,8 @@ public:
 class GoldenCircleSeat:public SpecialSeat
 {
 public:
-	GoldenCircleSeat(int chair, int line_num, int base_price)
-	:SpecialSeat(chair, line_num,base_price + 1000) {}
+	GoldenCircleSeat(int line_num, int chair_num, int base_price)
+	:SpecialSeat(line_num, chair_num,base_price + 1000) {}
 	~GoldenCircleSeat() = default;
 
 	string location() const override;
@@ -81,11 +82,11 @@ class DisablePodiumSeat:public SpecialSeat
 {
 
 public:
-	DisablePodiumSeat(int chair_num, int line_num,int base_price) 
-	:SpecialSeat(chair_num, line_num, -1) {}
+	DisablePodiumSeat(int line_num, int chair_num, int base_price)
+	:SpecialSeat(line_num, chair_num, -1) {}
 
-	DisablePodiumSeat(int chair_num, int line_num)
-	:SpecialSeat(chair_num,line_num,-1){}
+	DisablePodiumSeat(int line_num, int chair_num)
+	:SpecialSeat(line_num,chair_num,-1){}
 
 	string location() const override;
 	int price() const override;
@@ -96,8 +97,8 @@ class RegularSeat:public MainHallSeat
 {
 protected:
 	char area;
-	RegularSeat(char area, int chair, int line, int base_price)
-		:MainHallSeat(chair, line, base_price), area(area){}
+	RegularSeat(char area, int line, int chair, int base_price)
+		:MainHallSeat(line, chair, base_price), area(area){}
 public:
 	virtual ~RegularSeat() = default;
 	string location() const override;
@@ -108,8 +109,8 @@ public:
 class FrontRegularSeat :public RegularSeat
 {
 public:
-	FrontRegularSeat(char area, int chair, int line, int base_price)
-	:RegularSeat(area, chair,line, base_price + 500){}
+	FrontRegularSeat(char area, int line, int chair, int base_price)
+	:RegularSeat(area,line,chair, base_price + 500){}
 	~FrontRegularSeat() = default;
 	string location() const override;
 };
@@ -119,8 +120,8 @@ public:
 class MiddleRegularSeat :public RegularSeat
 {
 public:
-	MiddleRegularSeat(char area, int chair, int line, int base_price)
-	:RegularSeat(area, chair,line, base_price + 250) {}
+	MiddleRegularSeat(char area, int line, int chair, int base_price)
+	:RegularSeat(area, line,chair, base_price + 250) {}
 	~MiddleRegularSeat() = default;
 	string location() const override;
 };
@@ -130,8 +131,8 @@ public:
 class RearRegularSeat:public RegularSeat
 {
 public:
-	RearRegularSeat(char area, int chair, int line, int base_price)
-	:RegularSeat(area, chair,line, base_price) {}
+	RearRegularSeat(char area, int line, int chair, int base_price)
+	:RegularSeat(area, line,chair, base_price) {}
 	~RearRegularSeat() = default;
 	string location() const override;
 };

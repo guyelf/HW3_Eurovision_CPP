@@ -1,4 +1,3 @@
-#include "eurovision.h"
 #include "seat.h"
 
 using std::to_string;
@@ -24,7 +23,7 @@ int GreenRoomSeat::price() const
 
 string GreenRoomSeat::location() const
 {
-	return "Green Room-> " + this->location();
+	return "Green Room-> " + Seat::location();
 }
 
 
@@ -64,7 +63,8 @@ int DisablePodiumSeat::price() const
 
 string RegularSeat::location() const
 {
-	return "area: " + to_string(area) + " " + MainHallSeat::location();
+	string area_string = string(1,area);
+	return "area: " + area_string + " " + MainHallSeat::location();
 }
 
 
