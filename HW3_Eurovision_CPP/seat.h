@@ -1,18 +1,16 @@
 #ifndef SEAT_H_
 #define SEAT_H_
 
-#include <iostream>
 #include <string>
 using std::string;
-using std::runtime_error;
 using std::exception;
 
 // ---------------------------------------------
-class NoPrice:public runtime_error
+class NoPrice:public exception
 {
 
 public:
-	NoPrice():runtime_error("Not For Sale !"){}
+	char const* what() const noexcept override ;
 	virtual ~NoPrice()=default;
 };
 
@@ -21,13 +19,13 @@ class Seat
 {
 
 protected:
-	int chairNum;
 	int lineNum;
+	int chairNum;
 	int basePrice;
 
-protected:
-	Seat(int line_num, int chair_num, int base_price) :chairNum(chair_num),
-		lineNum(line_num),basePrice(base_price){}
+
+	Seat(int line_num, int chair_num, int base_price):lineNum(line_num), 
+	chairNum(chair_num), basePrice(base_price){}
 public:
 	virtual ~Seat() = default;
 

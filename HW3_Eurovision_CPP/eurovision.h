@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <list>
+#include <iterator>
 
 // it's allowed to define here any using statements, according to needs.
 // do NOT define here : using namespace std;
@@ -131,6 +133,7 @@ class MainControl
 	ParticipantWVotes* contest_arr;
 
 	int _iterator = 0;
+	ParticipantWVotes* cur_iterator;
 
 	//checks if the contest array is full
 	bool isContestFull();
@@ -159,17 +162,6 @@ public:
 	friend ostream& operator<<(ostream& os, const MainControl& eurovision);
 
 	typedef ParticipantWVotes* Iterator;
-	////Plan B
-	//class Iterator
-	//{
-	//	Iterator();
-	//	~Iterator() = default;
-	//public:
-	//	ParticipantWVotes* begin();
-	//	ParticipantWVotes* end();
-	//	bool operator==(const Iterator& i) const;
-	//	Iterator& operator++();
-	//};
 
 	Iterator begin();
 	Iterator end();
@@ -188,9 +180,50 @@ ostream& operator<<(ostream& os, const ParticipantWVotes& pwv);
 // -----------------------------------------------------------
 //Part B:
 
+
+
+
+
 //B.1
-template<typename Iterator>
-Iterator Get(Iterator begin, Iterator end, int place);
+using std::list;
+template<typename T_Iterator>
+T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
+{
+	//validity check
+	if (begin == end || place < 1)
+		return end;
+
+	int size = 0;
+	//gets the value the type that the iterator points to
+	list<typename std::iterator_traits<T_Iterator>::value_type> temp_list;
+
+	for (T_Iterator i = begin; i != end; ++i)
+	{
+		temp_list.push_back(*i);
+		size++;
+	}
+
+	//validity check- size is not available before the loop
+	if (size < place) //come back here to add the <= sign
+		return end;
+	//list is sorted in ascending order
+	temp_list.sort();
+
+	for (int i = 0; i < place - 1; ++i)
+	{
+		temp_list.pop_back();
+	}
+
+	typename std::iterator_traits<T_Iterator>::value_type result_value =
+		temp_list.back();
+
+	for (T_Iterator i = begin; i != end; ++i)
+	{
+		if (*i == result_value)
+			return i;
+	}
+	return end;
+}
 // -----------------------------------------------------------
 
 

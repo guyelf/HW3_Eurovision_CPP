@@ -3,6 +3,12 @@
 using std::to_string;
 
 
+//NoPrice
+char const* NoPrice::what() const noexcept
+{
+	return "Not For Sale !";
+}
+
 //Seat
 int Seat::price() const
 {

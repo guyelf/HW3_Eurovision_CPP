@@ -4,8 +4,9 @@
 using std::list;
 //Participant-------------------------------------------------------------------
 
-Participant::Participant(const string state, const string song, const int timeLength, const string singer)
-	:state_name(state), song_name(song), song_duration(timeLength), singer_name(singer)
+Participant::Participant(const string state,const string song,
+						 const int timeLength,const string singer)
+:state_name(state),song_name(song),song_duration(timeLength),singer_name(singer)
 {
 	is_registered = false;
 }
@@ -41,7 +42,8 @@ void Participant::updateRegistered(bool status)
 	this->is_registered = status;
 }
 
-void Participant::update(const string song, const int timeLength, const string singer)
+void Participant::update(const string song,const int timeLength,
+						 const string singer)
 {
 	if (isRegistered()) return;
 
@@ -347,11 +349,13 @@ ostream& operator<<(ostream& os, const Voter& v) {
 
 //prints the data of eurovision:
 ostream& operator<<(ostream& os, const MainControl& eurovision) {
-
 	os << "{" << endl;
-
-	if (eurovision.phase == Registration)
-	{
+	if(eurovision.phase == Contest){
+		os << "Contest" << endl;
+		os << "}" << endl;
+		return os;
+	}
+	if (eurovision.phase == Registration){
 		os << "Registration" << endl;
 		for (int i = 0; i < eurovision.maxParticipants; i++)
 		{
@@ -361,12 +365,10 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 			os << eurovision.contest_arr[i].participant_ptr->timeLength() << "/";
 			os << eurovision.contest_arr[i].participant_ptr->singer() << "]" << endl;
 		}
-
 		os << "}" << endl;
 		return os;
 	}
-	else
-	{
+	else{
 		os << "Voting" << endl;
 		for (int i = 0; i < eurovision.maxParticipants; i++)
 		{
@@ -375,52 +377,12 @@ ostream& operator<<(ostream& os, const MainControl& eurovision) {
 			os << "Regular(" << eurovision.contest_arr[i].reg_votes << ") ";
 			os << "Judge(" << eurovision.contest_arr[i].judge_votes << ")" << endl;
 		}
-
 		os << "}" << endl;
 		return os;
 	}
 }
 
 
-//B.1
-template<typename T_Iterator>
-T_Iterator Get(T_Iterator begin, T_Iterator end, int place)
-{
-	//validity check
-	if (begin == end || place < 1)
-		return end;
-
-	int size = 0;
-	//gets the value the type that the iterator points to
-	list<typename std::iterator_traits<T_Iterator>::value_type> temp_list;
-
-	for (T_Iterator i = begin; i != end; ++i)
-	{
-		temp_list.push_back(*i);
-		size++;
-	}
-
-	//validity check- size is not available before the loop
-	if (size < place) //come back here to add the <= sign
-		return end;
-	//list is sorted in ascending order
-	temp_list.sort();
-
-	for (int i = 0; i < place - 1; ++i)
-	{
-		temp_list.pop_back();
-	}
-
-	typename std::iterator_traits<T_Iterator>::value_type result_value = 
-	temp_list.back();
-
-	for (T_Iterator i = begin; i != end; ++i)
-	{
-		if (*i == result_value)
-			return i;
-	}
-	return end;
-}
 
 //Part B.2
 
@@ -444,8 +406,8 @@ MainControl::Iterator& MainControl::operator++()
 {
 	//Maybe a handle of out of memory exception is needed here
 	this->_iterator++;
-	Iterator temp = this->contest_arr + _iterator;
-	return temp;
+	this->cur_iterator = this->contest_arr + _iterator;
+	return this->cur_iterator;
 }
 
 
