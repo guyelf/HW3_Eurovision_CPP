@@ -427,5 +427,3 @@ string MainControl::operator()(const int place, const VoterType vt) const {
 
 
 
-
-
